@@ -37,7 +37,7 @@ const std::string DUMMY_TEXT_ATTRIBUTE_NAME = "text";
 DummyInstruction::DummyInstruction()
   : Instruction(Type)
 {
-  AddAttributeDefinition(DUMMY_TEXT_ATTRIBUTE_NAME, sup::dto::StringType);
+  AddAttributeDefinition(DUMMY_TEXT_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
 }
 
 DummyInstruction::~DummyInstruction() = default;
