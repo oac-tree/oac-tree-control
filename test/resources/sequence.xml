@@ -4,6 +4,8 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
            xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
     <Plugin>libsequencer-control.so</Plugin>
-    <Dummy text="This is a dummy instruction"/>
+    <WaitForCondition varNames="">
+        <Message text="Hello from the inside!"/>
+    </WaitForCondition>
     <Workspace/>
 </Procedure>

@@ -19,10 +19,12 @@
  * of the distribution package.
 ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_DUMMY_INSTRUCTION_H_
-#define SUP_SEQUENCER_PLUGIN_CONTROL_DUMMY_INSTRUCTION_H_
+#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_WAIT_FOR_CONDITION_INSTRUCTION_H_
+#define SUP_SEQUENCER_PLUGIN_CONTROL_WAIT_FOR_CONDITION_INSTRUCTION_H_
 
-#include <sup/sequencer/instruction.h>
+#include <sup/sequencer/decorator_instruction.h>
+
+#include <memory>
 
 namespace sup
 {
@@ -30,22 +32,26 @@ namespace sequencer
 {
 
 /**
- * @brief Does nothing.
+ * @brief Waits with a timeout for a condition to be satisfied. The instruction fails if the timeout
+ * was reached before the condition became true.
  */
-class DummyInstruction : public Instruction
+class WaitForConditionInstruction : public DecoratorInstruction
 {
 public:
-  DummyInstruction();
-  ~DummyInstruction() override;
+  WaitForConditionInstruction();
+  ~WaitForConditionInstruction() override;
 
   static const std::string Type;
 
 private:
+  void SetupImpl(const Procedure& proc) override;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
+
+  std::unique_ptr<Instruction> m_internal_instruction_tree;
 };
 
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_PLUGIN_CONTROL_DUMMY_INSTRUCTION_H_
+#endif  // SUP_SEQUENCER_PLUGIN_CONTROL_WAIT_FOR_CONDITION_INSTRUCTION_H_
