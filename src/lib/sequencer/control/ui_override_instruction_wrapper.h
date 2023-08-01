@@ -19,10 +19,10 @@
  * of the distribution package.
 ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_INTERNAL_INSTRUCTION_WRAPPER_H_
-#define SUP_SEQUENCER_PLUGIN_CONTROL_INTERNAL_INSTRUCTION_WRAPPER_H_
+#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_UI_OVERRIDE_INSTRUCTION_WRAPPER_H_
+#define SUP_SEQUENCER_PLUGIN_CONTROL_UI_OVERRIDE_INSTRUCTION_WRAPPER_H_
 
-#include <sup/sequencer/decorator_instruction.h>
+#include "non_owning_instruction_wrapper.h"
 
 namespace sup
 {
@@ -32,23 +32,18 @@ namespace sequencer
 /**
  * @brief Instruction wrapper that can inject a different UserInterface during execution.
  */
-class InternalInstructionWrapper : public Instruction
+class UIOVerrideInstructionWrapper : public NonOwningInstructionWrapper
 {
 public:
-  InternalInstructionWrapper(Instruction* instr);
-  ~InternalInstructionWrapper() override;
+  UIOVerrideInstructionWrapper(Instruction* instr);
+  ~UIOVerrideInstructionWrapper() override;
 
-  void SetUserInterface(UserInterface* ui);
+  void SetUserInterface(UserInterface& ui);
 
   static const std::string Type;
 
 private:
-  Instruction* m_instr;  // wrapped instruction
-  UserInterface* m_ui;   // userinterface to pass to child instruction
-  void ResetHook() override;
-  void HaltImpl() override;
-  std::vector<const Instruction*> NextInstructionsImpl() const override;
-  void SetupImpl(const Procedure& proc) override;
+  UserInterface* m_ui;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 };
 
@@ -56,4 +51,4 @@ private:
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_PLUGIN_CONTROL_INTERNAL_INSTRUCTION_WRAPPER_H_
+#endif  // SUP_SEQUENCER_PLUGIN_CONTROL_NON_OWNING_INSTRUCTION_WRAPPER_H_

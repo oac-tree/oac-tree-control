@@ -21,7 +21,7 @@
 
 #include "wait_for_condition_instruction.h"
 
-#include "internal_instruction_wrapper.h"
+#include "non_owning_instruction_wrapper.h"
 
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/instruction_utils.h>
@@ -58,7 +58,7 @@ void WaitForConditionInstruction::SetupImpl(const Procedure& proc)
       "Trying to setup this instruction without a child";
     throw InstructionSetupException(error_message);
   }
-  m_internal_instruction_tree.reset(new InternalInstructionWrapper(children[0]));
+  m_internal_instruction_tree.reset(new NonOwningInstructionWrapper(children[0]));
   m_internal_instruction_tree->Setup(proc);
 }
 
