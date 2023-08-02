@@ -22,6 +22,8 @@
 #ifndef SUP_SEQUENCER_PLUGIN_CONTROL_WAIT_FOR_CONDITION_INSTRUCTION_H_
 #define SUP_SEQUENCER_PLUGIN_CONTROL_WAIT_FOR_CONDITION_INSTRUCTION_H_
 
+#include "wrapped_instruction_manager.h"
+
 #include <sup/sequencer/decorator_instruction.h>
 
 #include <memory>
@@ -46,8 +48,12 @@ public:
 private:
   void SetupImpl(const Procedure& proc) override;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
+  void HaltImpl() override;
+  void ResetHook() override;
+  std::vector<const Instruction*> NextInstructionsImpl() const override;
 
   std::unique_ptr<Instruction> m_internal_instruction_tree;
+  WrappedInstructionManager m_instr_manager;
 };
 
 }  // namespace sequencer

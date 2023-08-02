@@ -22,6 +22,7 @@
 #include "wrapped_instruction_manager.h"
 
 #include "ui_override_instruction_wrapper.h"
+#include "wrapped_user_interface.h"
 
 #include <sup/sequencer/instruction.h>
 
@@ -50,9 +51,20 @@ void WrappedInstructionManager::SetUserInterface(UserInterface& ui)
     instr->SetUserInterface(ui);
   }
 }
+
+UserInterface& WrappedInstructionManager::GetWrappedUI(UserInterface& ui, const std::string& prefix)
+{
+  if (!m_wrapped_ui)
+  {
+    m_wrapped_ui.reset(new WrappedUserInterface(ui, prefix));
+  }
+  return *m_wrapped_ui;
+}
+
 void WrappedInstructionManager::ClearWrappers()
 {
   m_wrapped_instructions.clear();
+  m_wrapped_ui.reset();
 }
 
 } // namespace sequencer

@@ -19,44 +19,34 @@
  * of the distribution package.
 ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_WRAPPED_INSTRUCTION_MANAGER_H_
-#define SUP_SEQUENCER_PLUGIN_CONTROL_WRAPPED_INSTRUCTION_MANAGER_H_
+#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_WRAPPED_USER_INTERFACE_H_
+#define SUP_SEQUENCER_PLUGIN_CONTROL_WRAPPED_USER_INTERFACE_H_
 
-#include <memory>
-#include <string>
-#include <vector>
+#include <sup/sequencer/user_interface.h>
 
 namespace sup
 {
 namespace sequencer
 {
 class Instruction;
-class UIOVerrideInstructionWrapper;
-class UserInterface;
 /**
- * @brief
+ * @brief UserInterface wrapper that only forwards log messages
  */
-class WrappedInstructionManager
+class WrappedUserInterface : public UserInterface
 {
 public:
-  WrappedInstructionManager();
-  ~WrappedInstructionManager();
-
-  std::unique_ptr<Instruction> CreateInstructionWrapper(Instruction& instr);
-
-  void SetUserInterface(UserInterface& ui);
-
-  UserInterface& GetWrappedUI(UserInterface& ui, const std::string& prefix);
-
-  void ClearWrappers();
+  WrappedUserInterface(UserInterface& ui, const std::string& prefix);
+  ~WrappedUserInterface();
 
 private:
-  std::vector<std::unique_ptr<UIOVerrideInstructionWrapper>> m_wrapped_instructions;
-  std::unique_ptr<UserInterface> m_wrapped_ui;
+  UserInterface& m_ui;
+  std::string m_prefix;
+  void UpdateInstructionStatusImpl(const Instruction* instruction) override;
+  void LogImpl(int severity, const std::string& message) override;
 };
 
 }  // namespace sequencer
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_PLUGIN_CONTROL_WRAPPED_INSTRUCTION_MANAGER_H_
+#endif  // SUP_SEQUENCER_PLUGIN_CONTROL_WRAPPED_USER_INTERFACE_H_

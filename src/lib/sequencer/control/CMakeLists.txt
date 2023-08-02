@@ -15,6 +15,7 @@ target_sources(sequencer-control
     ${CMAKE_CURRENT_LIST_DIR}/ui_override_instruction_wrapper.cpp
     ${CMAKE_CURRENT_LIST_DIR}/wait_for_condition_instruction.cpp
     ${CMAKE_CURRENT_LIST_DIR}/wrapped_instruction_manager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/wrapped_user_interface.cpp
 )
 
 target_include_directories(sequencer-control PUBLIC
