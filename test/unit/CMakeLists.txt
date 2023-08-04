@@ -2,6 +2,7 @@ add_executable(unit-tests)
 
 target_sources(unit-tests
   PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/test_user_interface.cpp
     ${CMAKE_CURRENT_LIST_DIR}/wait_for_condition_tests.cpp
 )
 

@@ -19,13 +19,9 @@
 * of the distribution package.
 ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_
-#define SUP_SEQUENCER_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_
+#include "test_user_interface.h"
 
-#include <sup/sequencer/user_interface.h>
-
-#include <utility>
-#include <vector>
+#include <sstream>
 
 namespace sup {
 
@@ -33,35 +29,39 @@ namespace sequencer {
 
 namespace test {
 
-class NullUserInterface : public UserInterface
+NullUserInterface::NullUserInterface() = default;
+
+NullUserInterface::~NullUserInterface() = default;
+
+void NullUserInterface::UpdateInstructionStatusImpl(const Instruction*)
+{}
+
+LogUserInterface::LogUserInterface()
+  : m_log_entries{}
+{}
+
+LogUserInterface::~LogUserInterface() = default;
+
+void LogUserInterface::UpdateInstructionStatusImpl(const Instruction*)
+{}
+
+void LogUserInterface::LogImpl(int severity, const std::string& message)
 {
-public:
-  NullUserInterface();
-  ~NullUserInterface();
+  m_log_entries.emplace_back(severity, message);
+}
 
-  void UpdateInstructionStatusImpl(const Instruction* instruction) override;
-};
-
-class LogUserInterface : public UserInterface
+std::string LogUserInterface::GetFullLog() const
 {
-public:
-  using LogEntry = std::pair<int, std::string>;
-
-  LogUserInterface();
-  ~LogUserInterface();
-
-  void UpdateInstructionStatusImpl(const Instruction* instruction) override;
-  void LogImpl(int severity, const std::string& message) override;
-
-  std::string GetFullLog() const;
-
-  std::vector<LogEntry> m_log_entries;
-};
+  std::ostringstream oss;
+  for (const auto& log_entry : m_log_entries)
+  {
+    oss << "Severity(" << log_entry.first << "): " << log_entry.second << std::endl;
+  }
+  return oss.str();
+}
 
 } // namespace test
 
 } // namespace sequencer
 
 } // namespace sup
-
-#endif // SUP_SEQUENCER_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_
