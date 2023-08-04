@@ -68,30 +68,8 @@ void WaitForConditionInstruction::SetupImpl(const Procedure& proc)
       "Trying to setup this instruction without a child";
     throw InstructionSetupException(error_message);
   }
-  // Inverted wait with timeout branch
-  auto wait = GlobalInstructionRegistry().Create("Wait");
-  wait->AddAttribute("timeout", GetAttributeString(TIMEOUT_ATTR_NAME));
-  auto inv_wait = GlobalInstructionRegistry().Create("Inverter");
-  inv_wait->InsertInstruction(std::move(wait), 0);
-
-  // Branch that listens and only exits with success when condition is satisfied
-  auto wrapper = m_instr_manager.CreateInstructionWrapper(*children[0]);
-  auto inv_cond = GlobalInstructionRegistry().Create("Inverter");
-  inv_cond->InsertInstruction(std::move(wrapper), 0);
-  auto listen = GlobalInstructionRegistry().Create("Listen");
-  listen->AddAttribute("varNames", GetAttributeString(VARNAMES_ATTRIBUTE_NAME));
-  listen->InsertInstruction(std::move(inv_cond), 0);
-  auto inv_listen = GlobalInstructionRegistry().Create("Inverter");
-  inv_listen->InsertInstruction(std::move(listen), 0);
-
-  // Parallel sequence that aggregates both
-  auto parallel = GlobalInstructionRegistry().Create("ParallelSequence");
-  parallel->AddAttribute("successThreshold", "1");
-  parallel->AddAttribute("failureThreshold", "1");
-  parallel->InsertInstruction(std::move(inv_wait), 0);
-  parallel->InsertInstruction(std::move(inv_listen), 1);
-
-  std::swap(m_internal_instruction_tree, parallel);
+  auto instr_tree = CreateWrappedInstructionTree(*children[0]);
+  std::swap(m_internal_instruction_tree, instr_tree);
   m_internal_instruction_tree->Setup(proc);
 }
 
@@ -133,6 +111,35 @@ std::vector<const Instruction*> WaitForConditionInstruction::NextInstructionsImp
     }
   }
   return {};
+}
+
+std::unique_ptr<Instruction>  WaitForConditionInstruction::CreateWrappedInstructionTree(
+  Instruction& instr)
+{
+    // Inverted wait with timeout branch
+  auto wait = GlobalInstructionRegistry().Create("Wait");
+  wait->AddAttribute("timeout", GetAttributeString(TIMEOUT_ATTR_NAME));
+  auto inv_wait = GlobalInstructionRegistry().Create("Inverter");
+  inv_wait->InsertInstruction(std::move(wait), 0);
+
+  // Branch that listens and only exits with success when condition is satisfied
+  auto wrapper = m_instr_manager.CreateInstructionWrapper(instr);
+  auto inv_cond = GlobalInstructionRegistry().Create("Inverter");
+  inv_cond->InsertInstruction(std::move(wrapper), 0);
+  auto listen = GlobalInstructionRegistry().Create("Listen");
+  listen->AddAttribute("varNames", GetAttributeString(VARNAMES_ATTRIBUTE_NAME));
+  listen->InsertInstruction(std::move(inv_cond), 0);
+  auto inv_listen = GlobalInstructionRegistry().Create("Inverter");
+  inv_listen->InsertInstruction(std::move(listen), 0);
+
+  // Parallel sequence that aggregates both
+  auto parallel = GlobalInstructionRegistry().Create("ParallelSequence");
+  parallel->AddAttribute("successThreshold", "1");
+  parallel->AddAttribute("failureThreshold", "1");
+  parallel->InsertInstruction(std::move(inv_wait), 0);
+  parallel->InsertInstruction(std::move(inv_listen), 1);
+
+  return parallel;
 }
 
 } // namespace sequencer

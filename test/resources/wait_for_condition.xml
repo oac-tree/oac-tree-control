@@ -14,7 +14,7 @@
                 <Copy input="one" output="live"/>
             </Sequence>
         </ParallelSequence>
-        <Message text="Procedure succesful!"/>
+        <Message text="Procedure successful!"/>
     </Sequence>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />

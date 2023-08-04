@@ -51,6 +51,7 @@ private:
   void HaltImpl() override;
   void ResetHook() override;
   std::vector<const Instruction*> NextInstructionsImpl() const override;
+  std::unique_ptr<Instruction> CreateWrappedInstructionTree(Instruction& instr);
 
   std::unique_ptr<Instruction> m_internal_instruction_tree;
   WrappedInstructionManager m_instr_manager;
