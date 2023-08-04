@@ -19,30 +19,16 @@
 * of the distribution package.
 ******************************************************************************/
 
-#include "wrapped_user_interface.h"
+#include <gtest/gtest.h>
 
-namespace sup {
-
-namespace sequencer {
-
-WrappedUserInterface::WrappedUserInterface(UserInterface& ui, const std::string& prefix)
-  : m_ui{ui}
-  , m_prefix{prefix}
-{}
-
-WrappedUserInterface::~WrappedUserInterface() = default;
-
-void WrappedUserInterface::UpdateInstructionStatusImpl(const Instruction* instruction)
+class WaitForConditionTest : public ::testing::Test
 {
-  (void)instruction;
-}
+protected:
+  WaitForConditionTest() = default;
+  virtual ~WaitForConditionTest() = default;
+};
 
-void WrappedUserInterface::LogImpl(int severity, const std::string& message)
+TEST_F(WaitForConditionTest, success)
 {
-  std::string wrapped_message = m_prefix + message;
-  m_ui.Log(severity, wrapped_message);
+  EXPECT_TRUE(1 > 0);
 }
-
-} // namespace sequencer
-
-} // namespace sup

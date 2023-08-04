@@ -2,7 +2,7 @@ add_executable(unit-tests)
 
 target_sources(unit-tests
   PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/dummy_tests.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/wait_for_condition_tests.cpp
 )
 
 target_include_directories(unit-tests

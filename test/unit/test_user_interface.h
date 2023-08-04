@@ -19,34 +19,49 @@
 * of the distribution package.
 ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_WRAPPED_USER_INTERFACE_H_
-#define SUP_SEQUENCER_PLUGIN_CONTROL_WRAPPED_USER_INTERFACE_H_
+#ifndef SUP_SEQUENCER_PLUGIN_SUP_TEST_USER_INTERFACE_H_
+#define SUP_SEQUENCER_PLUGIN_SUP_TEST_USER_INTERFACE_H_
 
 #include <sup/sequencer/user_interface.h>
 
-namespace sup
-{
-namespace sequencer
-{
-class Instruction;
-/**
- * @brief UserInterface wrapper that only forwards log messages
- */
-class WrappedUserInterface : public UserInterface
+#include <utility>
+#include <vector>
+
+namespace sup {
+
+namespace sequencer {
+
+namespace test {
+
+class NullUserInterface : public UserInterface
 {
 public:
-  WrappedUserInterface(UserInterface& ui, const std::string& prefix);
-  ~WrappedUserInterface();
+  NullUserInterface();
+  ~NullUserInterface();
 
-private:
-  UserInterface& m_ui;
-  std::string m_prefix;
   void UpdateInstructionStatusImpl(const Instruction* instruction) override;
-  void LogImpl(int severity, const std::string& message) override;
 };
 
-}  // namespace sequencer
+class LogUserInterface : public UserInterface
+{
+public:
+  using LogEntry = std::pair<int, std::string>;
 
-}  // namespace sup
+  LogUserInterface();
+  ~LogUserInterface();
 
-#endif  // SUP_SEQUENCER_PLUGIN_CONTROL_WRAPPED_USER_INTERFACE_H_
+  void UpdateInstructionStatusImpl(const Instruction* instruction) override;
+  void LogImpl(int severity, const std::string& message) override;
+
+  std::string GetFullLog() const;
+
+  std::vector<LogEntry> m_log_entries;
+};
+
+} // namespace test
+
+} // namespace sequencer
+
+} // namespace sup
+
+#endif // SUP_SEQUENCER_PLUGIN_SUP_TEST_USER_INTERFACE_H_
