@@ -19,7 +19,7 @@
 * of the distribution package.
 ******************************************************************************/
 
-#include "wait_for_condition_instruction.h"
+#include "execute_while_instruction.h"
 
 #include "wrapped_user_interface.h"
 
@@ -30,42 +30,33 @@ namespace sup {
 
 namespace sequencer {
 
-const std::string WaitForConditionInstruction::Type = "WaitForCondition";
-static bool _wait_for_condition_initialised_flag =
-  RegisterGlobalInstruction<WaitForConditionInstruction>();
+const std::string ExecuteWhileInstruction::Type = "ExecuteWhile";
+static bool _execute_while_initialised_flag = RegisterGlobalInstruction<ExecuteWhileInstruction>();
 
-const std::string TIMEOUT_ATTR_NAME = "timeout";
 const std::string VARNAMES_ATTRIBUTE_NAME = "varNames";
 
 const std::string LOG_MESSAGE_PREFIX =
-  "Forwarded log message from internal instruction of WaitForCondition: ";
+  "Forwarded log message from internal instruction of ExecuteWhile: ";
 
-WaitForConditionInstruction::WaitForConditionInstruction()
-  : DecoratorInstruction(Type)
+
+ExecuteWhileInstruction::ExecuteWhileInstruction()
+  : CompoundInstruction(Type)
   , m_internal_instruction_tree{}
   , m_instr_manager{}
 {
   AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type).SetMandatory();
 }
 
-WaitForConditionInstruction::~WaitForConditionInstruction() = default;
+ExecuteWhileInstruction::~ExecuteWhileInstruction() = default;
 
-void WaitForConditionInstruction::SetupImpl(const Procedure& proc)
+void ExecuteWhileInstruction::SetupImpl(const Procedure& proc)
 {
-  auto children = ChildInstructions();
-  if (children.size() != 1)
-  {
-    std::string error_message = InstructionErrorProlog(*this) +
-      "Trying to setup this instruction without a child";
-    throw InstructionSetupException(error_message);
-  }
-  auto instr_tree = CreateWrappedInstructionTree(*children[0]);
+  auto instr_tree = CreateWrappedInstructionTree();
   std::swap(m_internal_instruction_tree, instr_tree);
   m_internal_instruction_tree->Setup(proc);
 }
 
-ExecutionStatus WaitForConditionInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+ExecutionStatus ExecuteWhileInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   m_instr_manager.SetUserInterface(ui);
   auto& wrapped_ui = m_instr_manager.GetWrappedUI(ui, LOG_MESSAGE_PREFIX);
@@ -73,7 +64,7 @@ ExecutionStatus WaitForConditionInstruction::ExecuteSingleImpl(UserInterface& ui
   return m_internal_instruction_tree->GetStatus();
 }
 
-void WaitForConditionInstruction::HaltImpl()
+void ExecuteWhileInstruction::HaltImpl()
 {
   if (m_internal_instruction_tree)
   {
@@ -81,7 +72,7 @@ void WaitForConditionInstruction::HaltImpl()
   }
 }
 
-void WaitForConditionInstruction::ResetHook()
+void ExecuteWhileInstruction::ResetHook()
 {
   if (m_internal_instruction_tree)
   {
@@ -91,36 +82,36 @@ void WaitForConditionInstruction::ResetHook()
   m_instr_manager.ClearWrappers();
 }
 
-std::vector<const Instruction*> WaitForConditionInstruction::NextInstructionsImpl() const
+std::vector<const Instruction*> ExecuteWhileInstruction::NextInstructionsImpl() const
 {
   return FilterNextInstructions(*this, m_internal_instruction_tree.get());
 }
 
-std::unique_ptr<Instruction> WaitForConditionInstruction::CreateWrappedInstructionTree(
-  Instruction& instr)
+std::unique_ptr<Instruction> ExecuteWhileInstruction::CreateWrappedInstructionTree()
 {
-  // Inverted wait with timeout branch
-  auto wait = GlobalInstructionRegistry().Create("Wait");
-  wait->AddAttribute("timeout", GetAttributeString(TIMEOUT_ATTR_NAME));
-  auto inv_wait = GlobalInstructionRegistry().Create("Inverter");
-  inv_wait->InsertInstruction(std::move(wait), 0);
+  auto children = ChildInstructions();
+  if (children.size() != 2)
+  {
+    std::string error_message = InstructionErrorProlog(*this) +
+      "This compound instruction requires exactly two child instructions";
+    throw InstructionSetupException(error_message);
+  }
 
-  // Branch that listens and only exits with success when condition is satisfied
-  auto wrapper = m_instr_manager.CreateInstructionWrapper(instr);
-  auto inv_cond = GlobalInstructionRegistry().Create("Inverter");
-  inv_cond->InsertInstruction(std::move(wrapper), 0);
+  // Wrapped execution tree
+  auto tree_wrapper = m_instr_manager.CreateInstructionWrapper(*children[0]);
+
+  // Condition monitoring tree
+  auto condition_wrapper = m_instr_manager.CreateInstructionWrapper(*children[1]);
   auto listen = GlobalInstructionRegistry().Create("Listen");
   listen->AddAttribute("varNames", GetAttributeString(VARNAMES_ATTRIBUTE_NAME));
-  listen->InsertInstruction(std::move(inv_cond), 0);
-  auto inv_listen = GlobalInstructionRegistry().Create("Inverter");
-  inv_listen->InsertInstruction(std::move(listen), 0);
+  listen->InsertInstruction(std::move(condition_wrapper), 0);
 
   // Parallel sequence that aggregates both
   auto parallel = GlobalInstructionRegistry().Create("ParallelSequence");
   parallel->AddAttribute("successThreshold", "1");
   parallel->AddAttribute("failureThreshold", "1");
-  parallel->InsertInstruction(std::move(inv_wait), 0);
-  parallel->InsertInstruction(std::move(inv_listen), 1);
+  parallel->InsertInstruction(std::move(tree_wrapper), 0);
+  parallel->InsertInstruction(std::move(listen), 1);
 
   return parallel;
 }
