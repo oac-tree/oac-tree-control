@@ -55,6 +55,9 @@ private:
   std::unique_ptr<UserInterface> m_wrapped_ui;
 };
 
+std::vector<const Instruction*> FilterNextInstructions(const Instruction& instr,
+                                                       const Instruction* tree);
+
 }  // namespace sequencer
 
 }  // namespace sup

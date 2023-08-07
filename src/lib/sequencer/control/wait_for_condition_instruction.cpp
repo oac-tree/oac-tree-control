@@ -24,17 +24,7 @@
 #include "wrapped_user_interface.h"
 
 #include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/instruction_tree.h>
 #include <sup/sequencer/instruction_utils.h>
-
-#include <algorithm>
-
-namespace
-{
-using namespace sup::sequencer;
-std::vector<const Instruction*> Intersection(const std::vector<const Instruction*>& left_set,
-                                             const std::vector<const Instruction*>& right_set);
-}  // unnamed namespace
 
 namespace sup {
 
@@ -101,16 +91,7 @@ void WaitForConditionInstruction::ResetHook()
 
 std::vector<const Instruction*> WaitForConditionInstruction::NextInstructionsImpl() const
 {
-  if (m_internal_instruction_tree)
-  {
-    auto children = ChildInstructions();
-    if (children.size() > 0)
-    {
-      auto next_instr = FlattenBFS(CreateNextInstructionTree(m_internal_instruction_tree.get()));
-      return Intersection(next_instr, children);
-    }
-  }
-  return {};
+  return FilterNextInstructions(*this, m_internal_instruction_tree.get());
 }
 
 std::unique_ptr<Instruction>  WaitForConditionInstruction::CreateWrappedInstructionTree(
@@ -145,22 +126,3 @@ std::unique_ptr<Instruction>  WaitForConditionInstruction::CreateWrappedInstruct
 } // namespace sequencer
 
 } // namespace sup
-
-namespace
-{
-using namespace sup::sequencer;
-std::vector<const Instruction*> Intersection(const std::vector<const Instruction*>& left_set,
-                                             const std::vector<const Instruction*>& right_set)
-{
-  std::vector<const Instruction*> result;
-  for (auto left_instr : left_set)
-  {
-    if (std::find(right_set.begin(), right_set.end(), left_instr) != right_set.end())
-    {
-      result.push_back(left_instr);
-    }
-  }
-  return result;
-}
-
-}  // unnamed namespace

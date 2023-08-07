@@ -25,6 +25,16 @@
 #include "wrapped_user_interface.h"
 
 #include <sup/sequencer/instruction.h>
+#include <sup/sequencer/instruction_tree.h>
+
+#include <algorithm>
+
+namespace
+{
+using namespace sup::sequencer;
+std::vector<const Instruction*> Intersection(const std::vector<const Instruction*>& left_set,
+                                             const std::vector<const Instruction*>& right_set);
+}  // unnamed namespace
 
 namespace sup {
 
@@ -67,6 +77,41 @@ void WrappedInstructionManager::ClearWrappers()
   m_wrapped_ui.reset();
 }
 
+std::vector<const Instruction*> FilterNextInstructions(const Instruction& instr,
+                                                       const Instruction* tree)
+{
+  if (tree == nullptr)
+  {
+    return {};
+  }
+  auto children = instr.ChildInstructions();
+  if (children.size() > 0)
+  {
+    auto next_instr = FlattenBFS(CreateNextInstructionTree(tree));
+    return Intersection(next_instr, children);
+  }
+  return {};
+}
+
 } // namespace sequencer
 
 } // namespace sup
+
+namespace
+{
+using namespace sup::sequencer;
+std::vector<const Instruction*> Intersection(const std::vector<const Instruction*>& left_set,
+                                             const std::vector<const Instruction*>& right_set)
+{
+  std::vector<const Instruction*> result;
+  for (auto left_instr : left_set)
+  {
+    if (std::find(right_set.begin(), right_set.end(), left_instr) != right_set.end())
+    {
+      result.push_back(left_instr);
+    }
+  }
+  return result;
+}
+
+}  // unnamed namespace
