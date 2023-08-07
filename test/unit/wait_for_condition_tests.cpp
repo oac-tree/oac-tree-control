@@ -22,6 +22,7 @@
 #include "test_user_interface.h"
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 
 #include <gtest/gtest.h>
@@ -60,15 +61,31 @@ TEST_F(WaitForConditionTest, Success)
 
 TEST_F(WaitForConditionTest, Setup)
 {
-  const std::string body{R"(
-    <WaitForCondition varNames="live" timeout="0.1"/>
-    <Workspace>
-        <Local name="live" type='{"type":"uint64"}' value='0' />
-    </Workspace>
-)"};
+  {
+    // No child
+    const std::string body{R"(
+      <WaitForCondition varNames="live" timeout="0.1"/>
+      <Workspace>
+          <Local name="live" type='{"type":"uint64"}' value='0' />
+      </Workspace>)"};
 
-  auto proc = ParseProcedureString(test::CreateProcedureString(body));
-  EXPECT_THROW(proc->Setup(), InstructionSetupException);
+    auto proc = ParseProcedureString(test::CreateProcedureString(body));
+    EXPECT_THROW(proc->Setup(), InstructionSetupException);
+  }
+  {
+    // Missing attributes
+    auto instr = GlobalInstructionRegistry().Create("WaitForCondition");
+    auto wait = GlobalInstructionRegistry().Create("Wait");
+    ASSERT_TRUE(instr);
+    ASSERT_TRUE(wait);
+    ASSERT_TRUE(instr->InsertInstruction(std::move(wait), 0));
+    Procedure proc;
+    EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+    EXPECT_TRUE(instr->AddAttribute("timeout", "1.0"));
+    EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+    EXPECT_TRUE(instr->AddAttribute("varNames", "does_not_matter"));
+    EXPECT_NO_THROW(instr->Setup(proc));
+  }
 }
 
 TEST_F(WaitForConditionTest, Failure)

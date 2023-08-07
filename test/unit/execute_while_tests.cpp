@@ -22,6 +22,7 @@
 #include "test_user_interface.h"
 #include "unit_test_helper.h"
 
+#include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/sequence_parser.h>
 
 #include <gtest/gtest.h>
@@ -96,15 +97,19 @@ TEST_F(ExecuteWhileTest, Setup)
   }
   {
     // Missing mandatory attribute
-    const std::string body{R"(
-      <ExecuteWhile>
-          <Wait timeout="1.0"/>
-          <Wait timeout="2.0"/>
-      </ExecuteWhile>
-      <Workspace/>)"};
-
-    auto proc = ParseProcedureString(test::CreateProcedureString(body));
-    EXPECT_THROW(proc->Setup(), InstructionSetupException);
+    auto instr = GlobalInstructionRegistry().Create("ExecuteWhile");
+    auto wait_1 = GlobalInstructionRegistry().Create("Wait");
+    auto wait_2 = GlobalInstructionRegistry().Create("Wait");
+    ASSERT_TRUE(instr);
+    ASSERT_TRUE(wait_1);
+    ASSERT_TRUE(wait_2);
+    ASSERT_TRUE(instr->InsertInstruction(std::move(wait_1), 0));
+    ASSERT_TRUE(instr->InsertInstruction(std::move(wait_2), 1));
+    ASSERT_TRUE(instr);
+    Procedure proc;
+    EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+    EXPECT_TRUE(instr->AddAttribute("varNames", "does_not_matter"));
+    EXPECT_NO_THROW(instr->Setup(proc));
   }
 }
 
