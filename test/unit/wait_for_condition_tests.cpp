@@ -19,7 +19,14 @@
 * of the distribution package.
 ******************************************************************************/
 
+#include "test_user_interface.h"
+#include "unit_test_helper.h"
+
+#include <sup/sequencer/sequence_parser.h>
+
 #include <gtest/gtest.h>
+
+using namespace sup::sequencer;
 
 class WaitForConditionTest : public ::testing::Test
 {
@@ -30,5 +37,46 @@ protected:
 
 TEST_F(WaitForConditionTest, success)
 {
-  EXPECT_TRUE(1 > 0);
+  const std::string body{R"(
+    <ParallelSequence>
+        <WaitForCondition varNames="live" timeout="1.0">
+            <Equals lhs="live" rhs="one"/>
+        </WaitForCondition>
+        <Sequence>
+            <Wait timeout="0.1"/>
+            <Copy input="one" output="live"/>
+        </Sequence>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::NullUserInterface ui;
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui));
+}
+
+TEST_F(WaitForConditionTest, failure)
+{
+  const std::string body{R"(
+    <ParallelSequence>
+        <WaitForCondition varNames="live" timeout="0.1">
+            <Equals lhs="live" rhs="one"/>
+        </WaitForCondition>
+        <Sequence>
+            <Wait timeout="1.0"/>
+            <Copy input="one" output="live"/>
+        </Sequence>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::NullUserInterface ui;
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }

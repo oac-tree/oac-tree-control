@@ -19,13 +19,7 @@
 * of the distribution package.
 ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_
-#define SUP_SEQUENCER_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_
-
-#include <sup/sequencer/user_interface.h>
-
-#include <utility>
-#include <vector>
+#include "unit_test_helper.h"
 
 namespace sup {
 
@@ -33,33 +27,22 @@ namespace sequencer {
 
 namespace test {
 
-class NullUserInterface : public UserInterface
+std::string CreateProcedureString(const std::string &body)
 {
-public:
-  NullUserInterface();
-  ~NullUserInterface();
+  static const std::string header{
+      R"RAW(<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure for unit testing"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">)RAW"};
 
-  void UpdateInstructionStatusImpl(const Instruction* instruction) override;
-};
+  static const std::string footer{R"RAW(</Procedure>)RAW"};
 
-class LogUserInterface : public UserInterface
-{
-public:
-  using LogEntry = std::pair<int, std::string>;
-
-  LogUserInterface();
-  ~LogUserInterface();
-
-  void UpdateInstructionStatusImpl(const Instruction* instruction) override;
-  void LogImpl(int severity, const std::string& message) override;
-
-  std::vector<LogEntry> m_log_entries;
-};
+  return header + body + footer;
+}
 
 } // namespace test
 
 } // namespace sequencer
 
 } // namespace sup
-
-#endif // SUP_SEQUENCER_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_

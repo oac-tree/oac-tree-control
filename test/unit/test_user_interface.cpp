@@ -50,16 +50,6 @@ void LogUserInterface::LogImpl(int severity, const std::string& message)
   m_log_entries.emplace_back(severity, message);
 }
 
-std::string LogUserInterface::GetFullLog() const
-{
-  std::ostringstream oss;
-  for (const auto& log_entry : m_log_entries)
-  {
-    oss << "Severity(" << log_entry.first << "): " << log_entry.second << std::endl;
-  }
-  return oss.str();
-}
-
 } // namespace test
 
 } // namespace sequencer
