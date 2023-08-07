@@ -34,7 +34,10 @@ class Instruction;
 class UIOVerrideInstructionWrapper;
 class UserInterface;
 /**
- * @brief
+ * @brief This class manages wrappers, that do not own their child instructions. It is used to
+ * create private instruction trees inside an instruction and attach already owned child
+ * instructions into that tree. Currently, it also provides a way to inject a different
+ * UserInterface class during execution to the wrapped instructions.
  */
 class WrappedInstructionManager
 {
