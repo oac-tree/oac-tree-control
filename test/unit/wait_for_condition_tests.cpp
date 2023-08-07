@@ -35,7 +35,7 @@ protected:
   virtual ~WaitForConditionTest() = default;
 };
 
-TEST_F(WaitForConditionTest, success)
+TEST_F(WaitForConditionTest, Success)
 {
   const std::string body{R"(
     <ParallelSequence>
@@ -58,7 +58,20 @@ TEST_F(WaitForConditionTest, success)
   EXPECT_TRUE(test::TryAndExecute(proc, ui));
 }
 
-TEST_F(WaitForConditionTest, failure)
+TEST_F(WaitForConditionTest, Setup)
+{
+  const std::string body{R"(
+    <WaitForCondition varNames="live" timeout="0.1"/>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+    </Workspace>
+)"};
+
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_THROW(proc->Setup(), InstructionSetupException);
+}
+
+TEST_F(WaitForConditionTest, Failure)
 {
   const std::string body{R"(
     <ParallelSequence>
