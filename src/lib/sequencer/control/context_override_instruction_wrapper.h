@@ -19,8 +19,8 @@
 * of the distribution package.
 ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_UI_OVERRIDE_INSTRUCTION_WRAPPER_H_
-#define SUP_SEQUENCER_PLUGIN_CONTROL_UI_OVERRIDE_INSTRUCTION_WRAPPER_H_
+#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_CONTEXT_OVERRIDE_INSTRUCTION_WRAPPER_H_
+#define SUP_SEQUENCER_PLUGIN_CONTROL_CONTEXT_OVERRIDE_INSTRUCTION_WRAPPER_H_
 
 #include "non_owning_instruction_wrapper.h"
 
@@ -32,11 +32,11 @@ namespace sequencer
 /**
  * @brief Instruction wrapper that can inject a different UserInterface during execution.
  */
-class UIOVerrideInstructionWrapper : public NonOwningInstructionWrapper
+class ContextOVerrideInstructionWrapper : public NonOwningInstructionWrapper
 {
 public:
-  UIOVerrideInstructionWrapper(Instruction* instr);
-  ~UIOVerrideInstructionWrapper() override;
+  ContextOVerrideInstructionWrapper(Instruction* instr);
+  ~ContextOVerrideInstructionWrapper() override;
 
   void SetUserInterface(UserInterface& ui);
 
@@ -51,4 +51,4 @@ private:
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_PLUGIN_CONTROL_NON_OWNING_INSTRUCTION_WRAPPER_H_
+#endif  // SUP_SEQUENCER_PLUGIN_CONTROL_CONTEXT_OVERRIDE_INSTRUCTION_WRAPPER_H_

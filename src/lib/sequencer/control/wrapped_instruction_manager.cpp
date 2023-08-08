@@ -21,7 +21,7 @@
 
 #include "wrapped_instruction_manager.h"
 
-#include "ui_override_instruction_wrapper.h"
+#include "context_override_instruction_wrapper.h"
 #include "wrapped_user_interface.h"
 
 #include <sup/sequencer/instruction.h>
@@ -48,7 +48,7 @@ WrappedInstructionManager::~WrappedInstructionManager() = default;
 
 std::unique_ptr<Instruction> WrappedInstructionManager::CreateInstructionWrapper(Instruction& instr)
 {
-  m_wrapped_instructions.emplace_back(new UIOVerrideInstructionWrapper(std::addressof(instr)));
+  m_wrapped_instructions.emplace_back(new ContextOVerrideInstructionWrapper(std::addressof(instr)));
   auto wrapper = m_wrapped_instructions.back().get();
   std::unique_ptr<Instruction> result{new NonOwningInstructionWrapper(wrapper)};
   return result;

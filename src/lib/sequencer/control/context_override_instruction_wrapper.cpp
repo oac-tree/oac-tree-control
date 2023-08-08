@@ -19,27 +19,27 @@
 * of the distribution package.
 ******************************************************************************/
 
-#include "ui_override_instruction_wrapper.h"
+#include "context_override_instruction_wrapper.h"
 
 namespace sup {
 
 namespace sequencer {
 
-const std::string UIOVerrideInstructionWrapper::Type = "UIOVerrideInstructionWrapper";
+const std::string ContextOVerrideInstructionWrapper::Type = "ContextOVerrideInstructionWrapper";
 
-UIOVerrideInstructionWrapper::UIOVerrideInstructionWrapper(Instruction* instr)
+ContextOVerrideInstructionWrapper::ContextOVerrideInstructionWrapper(Instruction* instr)
   : NonOwningInstructionWrapper(instr, Type)
   , m_ui{}
 {}
 
-UIOVerrideInstructionWrapper::~UIOVerrideInstructionWrapper() = default;
+ContextOVerrideInstructionWrapper::~ContextOVerrideInstructionWrapper() = default;
 
-void UIOVerrideInstructionWrapper::SetUserInterface(UserInterface& ui)
+void ContextOVerrideInstructionWrapper::SetUserInterface(UserInterface& ui)
 {
   m_ui = std::addressof(ui);
 }
 
-ExecutionStatus UIOVerrideInstructionWrapper::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+ExecutionStatus ContextOVerrideInstructionWrapper::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
   auto selected_ui = m_ui == nullptr ? std::addressof(ui)
                                      : m_ui;

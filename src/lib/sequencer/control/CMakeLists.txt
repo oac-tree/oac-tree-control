@@ -11,9 +11,9 @@ set_target_properties(sequencer-control PROPERTIES
 
 target_sources(sequencer-control
   PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/context_override_instruction_wrapper.cpp
     ${CMAKE_CURRENT_LIST_DIR}/execute_while_instruction.cpp
     ${CMAKE_CURRENT_LIST_DIR}/non_owning_instruction_wrapper.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ui_override_instruction_wrapper.cpp
     ${CMAKE_CURRENT_LIST_DIR}/wait_for_condition_instruction.cpp
     ${CMAKE_CURRENT_LIST_DIR}/wrapped_instruction_manager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/wrapped_user_interface.cpp

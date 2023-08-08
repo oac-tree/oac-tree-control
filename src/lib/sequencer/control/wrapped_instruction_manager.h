@@ -31,7 +31,7 @@ namespace sup
 namespace sequencer
 {
 class Instruction;
-class UIOVerrideInstructionWrapper;
+class ContextOVerrideInstructionWrapper;
 class UserInterface;
 /**
  * @brief This class manages wrappers, that do not own their child instructions. It is used to
@@ -54,7 +54,7 @@ public:
   void ClearWrappers();
 
 private:
-  std::vector<std::unique_ptr<UIOVerrideInstructionWrapper>> m_wrapped_instructions;
+  std::vector<std::unique_ptr<ContextOVerrideInstructionWrapper>> m_wrapped_instructions;
   std::unique_ptr<UserInterface> m_wrapped_ui;
 };
 
