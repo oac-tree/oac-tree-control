@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+           name="Procedure for testing purposes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">
+    <Plugin>libsequencer-control.so</Plugin>
+    <Sequence>
+        <Repeat maxCount="3">
+            <ExecuteWhile varNames="live">
+                <Wait timeout="0.2"/>
+                <Equals lhs="live" rhs="zero"/>
+            </ExecuteWhile>
+        </Repeat>
+        <Message text="ExecuteWhile successful!"/>
+    </Sequence>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="zero" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+</Procedure>

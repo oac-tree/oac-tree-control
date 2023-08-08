@@ -79,8 +79,6 @@ void ExecuteWhileInstruction::ResetHook()
   {
     m_internal_instruction_tree->Reset();
   }
-  m_internal_instruction_tree.reset();
-  m_instr_manager.ClearWrappers();
 }
 
 std::vector<const Instruction*> ExecuteWhileInstruction::NextInstructionsImpl() const
@@ -90,6 +88,7 @@ std::vector<const Instruction*> ExecuteWhileInstruction::NextInstructionsImpl() 
 
 std::unique_ptr<Instruction> ExecuteWhileInstruction::CreateWrappedInstructionTree()
 {
+  m_instr_manager.ClearWrappers();
   auto children = ChildInstructions();
   if (children.size() != 2)
   {

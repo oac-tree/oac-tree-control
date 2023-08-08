@@ -53,14 +53,7 @@ WaitForConditionInstruction::~WaitForConditionInstruction() = default;
 
 void WaitForConditionInstruction::SetupImpl(const Procedure& proc)
 {
-  auto children = ChildInstructions();
-  if (children.size() != 1)
-  {
-    std::string error_message = InstructionErrorProlog(*this) +
-      "Trying to setup this instruction without a child";
-    throw InstructionSetupException(error_message);
-  }
-  auto instr_tree = CreateWrappedInstructionTree(*children[0]);
+  auto instr_tree = CreateWrappedInstructionTree();
   std::swap(m_internal_instruction_tree, instr_tree);
   m_internal_instruction_tree->Setup(proc);
 }
@@ -88,8 +81,6 @@ void WaitForConditionInstruction::ResetHook()
   {
     m_internal_instruction_tree->Reset();
   }
-  m_internal_instruction_tree.reset();
-  m_instr_manager.ClearWrappers();
 }
 
 std::vector<const Instruction*> WaitForConditionInstruction::NextInstructionsImpl() const
@@ -97,9 +88,17 @@ std::vector<const Instruction*> WaitForConditionInstruction::NextInstructionsImp
   return FilterNextInstructions(*this, m_internal_instruction_tree.get());
 }
 
-std::unique_ptr<Instruction> WaitForConditionInstruction::CreateWrappedInstructionTree(
-  Instruction& instr)
+std::unique_ptr<Instruction> WaitForConditionInstruction::CreateWrappedInstructionTree()
 {
+  m_instr_manager.ClearWrappers();
+  auto children = ChildInstructions();
+  if (children.size() != 1)
+  {
+    std::string error_message = InstructionErrorProlog(*this) +
+      "Trying to setup decorator without a child";
+    throw InstructionSetupException(error_message);
+  }
+
   // Inverted wait with timeout branch
   auto wait = GlobalInstructionRegistry().Create("Wait");
   wait->AddAttribute("timeout", GetAttributeString(TIMEOUT_ATTR_NAME));
@@ -107,7 +106,7 @@ std::unique_ptr<Instruction> WaitForConditionInstruction::CreateWrappedInstructi
   inv_wait->InsertInstruction(std::move(wait), 0);
 
   // Branch that listens and only exits with success when condition is satisfied
-  auto wrapper = m_instr_manager.CreateInstructionWrapper(instr);
+  auto wrapper = m_instr_manager.CreateInstructionWrapper(*children[0]);
   auto inv_cond = GlobalInstructionRegistry().Create("Inverter");
   inv_cond->InsertInstruction(std::move(wrapper), 0);
   auto listen = GlobalInstructionRegistry().Create("Listen");
