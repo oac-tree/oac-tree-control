@@ -33,6 +33,7 @@ namespace sequencer
 class Instruction;
 class ContextOVerrideInstructionWrapper;
 class UserInterface;
+class Workspace;
 /**
  * @brief This class manages wrappers, that do not own their child instructions. It is used to
  * create private instruction trees inside an instruction and attach already owned child
@@ -47,15 +48,17 @@ public:
 
   std::unique_ptr<Instruction> CreateInstructionWrapper(Instruction& instr);
 
-  void SetUserInterface(UserInterface& ui);
+  void SetContext(UserInterface& ui, Workspace& ws);
 
   UserInterface& GetWrappedUI(UserInterface& ui, const std::string& prefix);
+  Workspace& GetLocalWorkspace();
 
   void ClearWrappers();
 
 private:
   std::vector<std::unique_ptr<ContextOVerrideInstructionWrapper>> m_wrapped_instructions;
   std::unique_ptr<UserInterface> m_wrapped_ui;
+  std::unique_ptr<Workspace> m_local_workspace;
 };
 
 std::vector<const Instruction*> FilterNextInstructions(const Instruction& instr,

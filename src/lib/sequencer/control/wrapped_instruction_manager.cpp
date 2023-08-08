@@ -26,6 +26,7 @@
 
 #include <sup/sequencer/instruction.h>
 #include <sup/sequencer/instruction_tree.h>
+#include <sup/sequencer/workspace.h>
 
 #include <algorithm>
 
@@ -42,6 +43,8 @@ namespace sequencer {
 
 WrappedInstructionManager::WrappedInstructionManager()
   : m_wrapped_instructions{}
+  , m_wrapped_ui{}
+  , m_local_workspace{}
 {}
 
 WrappedInstructionManager::~WrappedInstructionManager() = default;
@@ -54,11 +57,12 @@ std::unique_ptr<Instruction> WrappedInstructionManager::CreateInstructionWrapper
   return result;
 }
 
-void WrappedInstructionManager::SetUserInterface(UserInterface& ui)
+void WrappedInstructionManager::SetContext(UserInterface& ui, Workspace& ws)
 {
   for (auto& instr : m_wrapped_instructions)
   {
     instr->SetUserInterface(ui);
+    instr->SetWorkspace(ws);
   }
 }
 
@@ -71,10 +75,20 @@ UserInterface& WrappedInstructionManager::GetWrappedUI(UserInterface& ui, const 
   return *m_wrapped_ui;
 }
 
+Workspace& WrappedInstructionManager::GetLocalWorkspace()
+{
+  if (!m_local_workspace)
+  {
+    m_local_workspace.reset(new Workspace{});
+  }
+  return *m_local_workspace;
+}
+
 void WrappedInstructionManager::ClearWrappers()
 {
   m_wrapped_instructions.clear();
   m_wrapped_ui.reset();
+  m_local_workspace.reset();
 }
 
 std::vector<const Instruction*> FilterNextInstructions(const Instruction& instr,
