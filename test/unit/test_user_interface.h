@@ -42,18 +42,22 @@ public:
   void UpdateInstructionStatusImpl(const Instruction* instruction) override;
 };
 
-class LogUserInterface : public UserInterface
+class TestUserInputInterface : public UserInterface
 {
 public:
-  using LogEntry = std::pair<int, std::string>;
+  TestUserInputInterface();
+  ~TestUserInputInterface();
 
-  LogUserInterface();
-  ~LogUserInterface();
+  void SetUserChoices(const std::vector<int>& user_choices);
 
   void UpdateInstructionStatusImpl(const Instruction* instruction) override;
-  void LogImpl(int severity, const std::string& message) override;
+  int GetUserChoiceImpl(const std::vector<std::string>& options,
+                        const sup::dto::AnyValue& metadata) override;
 
-  std::vector<LogEntry> m_log_entries;
+  std::string m_main_text;
+private:
+  std::vector<int> m_user_choices;
+  std::size_t m_current_index;
 };
 
 } // namespace test

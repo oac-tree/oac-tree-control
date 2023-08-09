@@ -21,7 +21,7 @@
 
 #include "test_user_interface.h"
 
-#include <sstream>
+#include <sup/sequencer/constants.h>
 
 namespace sup {
 
@@ -36,18 +36,37 @@ NullUserInterface::~NullUserInterface() = default;
 void NullUserInterface::UpdateInstructionStatusImpl(const Instruction*)
 {}
 
-LogUserInterface::LogUserInterface()
-  : m_log_entries{}
+TestUserInputInterface::TestUserInputInterface()
+  : m_main_text{}
+  , m_user_choices{}
+  , m_current_index{0}
 {}
 
-LogUserInterface::~LogUserInterface() = default;
+TestUserInputInterface::~TestUserInputInterface() = default;
 
-void LogUserInterface::UpdateInstructionStatusImpl(const Instruction*)
-{}
-
-void LogUserInterface::LogImpl(int severity, const std::string& message)
+void TestUserInputInterface::SetUserChoices(const std::vector<int>& user_choices)
 {
-  m_log_entries.emplace_back(severity, message);
+  m_user_choices = user_choices;
+  m_current_index = 0;
+}
+
+void TestUserInputInterface::UpdateInstructionStatusImpl(const Instruction*)
+{}
+
+int TestUserInputInterface::GetUserChoiceImpl(const std::vector<std::string>& options,
+                                              const sup::dto::AnyValue& metadata)
+{
+  (void)options;
+  m_main_text = metadata[Constants::USER_CHOICES_TEXT_NAME].As<std::string>();
+  if (m_user_choices.empty())
+  {
+    return -1;
+  }
+  if (m_current_index == m_user_choices.size())
+  {
+    m_current_index = 0;
+  }
+  return m_user_choices[m_current_index++];
 }
 
 } // namespace test
