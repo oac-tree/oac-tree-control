@@ -62,6 +62,7 @@ void AchieveConditionInstruction::SetupImpl(const Procedure& proc)
       "This compound instruction requires exactly two child instructions";
     throw InstructionSetupException(error_message);
   }
+  SetupChildren(proc);
 }
 
 ExecutionStatus AchieveConditionInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
