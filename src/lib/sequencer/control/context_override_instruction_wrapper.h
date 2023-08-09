@@ -39,13 +39,11 @@ public:
   ~ContextOVerrideInstructionWrapper() override;
 
   void SetUserInterface(UserInterface& ui);
-  void SetWorkspace(Workspace& ws);
 
   static const std::string Type;
 
 private:
   UserInterface* m_ui;
-  Workspace* m_ws;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
 };
 

@@ -57,12 +57,11 @@ std::unique_ptr<Instruction> WrappedInstructionManager::CreateInstructionWrapper
   return result;
 }
 
-void WrappedInstructionManager::SetContext(UserInterface& ui, Workspace& ws)
+void WrappedInstructionManager::SetContext(UserInterface& ui)
 {
   for (auto& instr : m_wrapped_instructions)
   {
     instr->SetUserInterface(ui);
-    instr->SetWorkspace(ws);
   }
 }
 

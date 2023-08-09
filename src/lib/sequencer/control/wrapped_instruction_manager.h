@@ -48,7 +48,7 @@ public:
 
   std::unique_ptr<Instruction> CreateInstructionWrapper(Instruction& instr);
 
-  void SetContext(UserInterface& ui, Workspace& ws);
+  void SetContext(UserInterface& ui);
 
   UserInterface& GetWrappedUI(UserInterface& ui, const std::string& prefix);
   Workspace& GetLocalWorkspace();

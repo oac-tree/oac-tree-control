@@ -30,7 +30,6 @@ const std::string ContextOVerrideInstructionWrapper::Type = "ContextOVerrideInst
 ContextOVerrideInstructionWrapper::ContextOVerrideInstructionWrapper(Instruction* instr)
   : NonOwningInstructionWrapper(instr, Type)
   , m_ui{}
-  , m_ws{}
 {}
 
 ContextOVerrideInstructionWrapper::~ContextOVerrideInstructionWrapper() = default;
@@ -40,19 +39,12 @@ void ContextOVerrideInstructionWrapper::SetUserInterface(UserInterface& ui)
   m_ui = std::addressof(ui);
 }
 
-void ContextOVerrideInstructionWrapper::SetWorkspace(Workspace& ws)
-{
-  m_ws = std::addressof(ws);
-}
-
 ExecutionStatus ContextOVerrideInstructionWrapper::ExecuteSingleImpl(
   UserInterface& ui, Workspace& ws)
 {
   auto selected_ui = m_ui == nullptr ? std::addressof(ui)
                                      : m_ui;
-  auto selected_ws = m_ws == nullptr ? std::addressof(ws)
-                                     : m_ws;
-  GetInstruction()->ExecuteSingle(*selected_ui, *selected_ws);
+  GetInstruction()->ExecuteSingle(*selected_ui, ws);
   return GetInstruction()->GetStatus();
 }
 
