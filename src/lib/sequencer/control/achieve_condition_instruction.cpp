@@ -161,7 +161,7 @@ AchieveConditionInstruction::GetUserInput(UserInterface &ui) const
   if (choice < 0 || choice >= 3)
   {
     std::string warning_message = InstructionWarningProlog(*this) +
-      "user choice [" + std::to_string(choice) + "] is not a valid value with three options";
+      "user choice [" + std::to_string(choice) + "] is invalid. Valid values are 0, 1 or 2.";
     ui.LogWarning(warning_message);
     return kFail;
   }
