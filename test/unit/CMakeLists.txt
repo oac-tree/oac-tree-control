@@ -2,16 +2,16 @@ add_executable(unit-tests)
 
 target_sources(unit-tests
   PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/achieve_condition_tests.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/execute_while_tests.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/test_user_interface.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/unit_test_helper.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/wait_for_condition_tests.cpp
+  achieve_condition_tests.cpp
+  execute_while_tests.cpp
+  test_user_interface.cpp
+  unit_test_helper.cpp
+  wait_for_condition_tests.cpp
 )
 
 target_include_directories(unit-tests
   PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}
+  ${CMAKE_CURRENT_LIST_DIR}
 )
 
 find_package(GTest REQUIRED)
