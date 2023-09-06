@@ -41,7 +41,6 @@ public:
 private:
   UserInterface& m_ui;
   std::string m_prefix;
-  void UpdateInstructionStatus(const Instruction* instruction) override;
   void Log(int severity, const std::string& message) override;
 };
 
