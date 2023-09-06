@@ -29,13 +29,6 @@ namespace sequencer {
 
 namespace test {
 
-NullUserInterface::NullUserInterface() = default;
-
-NullUserInterface::~NullUserInterface() = default;
-
-void NullUserInterface::UpdateInstructionStatusImpl(const Instruction*)
-{}
-
 TestUserInputInterface::TestUserInputInterface()
   : m_main_text{}
   , m_user_choices{}
@@ -50,10 +43,7 @@ void TestUserInputInterface::SetUserChoices(const std::vector<int>& user_choices
   m_current_index = 0;
 }
 
-void TestUserInputInterface::UpdateInstructionStatusImpl(const Instruction*)
-{}
-
-int TestUserInputInterface::GetUserChoiceImpl(const std::vector<std::string>& options,
+int TestUserInputInterface::GetUserChoice(const std::vector<std::string>& options,
                                               const sup::dto::AnyValue& metadata)
 {
   (void)options;

@@ -33,16 +33,9 @@ namespace sequencer {
 
 namespace test {
 
-class NullUserInterface : public UserInterface
-{
-public:
-  NullUserInterface();
-  ~NullUserInterface();
+using NullUserInterface = DefaultUserInterface;
 
-  void UpdateInstructionStatusImpl(const Instruction* instruction) override;
-};
-
-class TestUserInputInterface : public UserInterface
+class TestUserInputInterface : public DefaultUserInterface
 {
 public:
   TestUserInputInterface();
@@ -50,8 +43,7 @@ public:
 
   void SetUserChoices(const std::vector<int>& user_choices);
 
-  void UpdateInstructionStatusImpl(const Instruction* instruction) override;
-  int GetUserChoiceImpl(const std::vector<std::string>& options,
+  int GetUserChoice(const std::vector<std::string>& options,
                         const sup::dto::AnyValue& metadata) override;
 
   std::string m_main_text;

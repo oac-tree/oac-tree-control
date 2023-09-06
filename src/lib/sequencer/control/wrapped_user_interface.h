@@ -32,7 +32,7 @@ class Instruction;
 /**
  * @brief UserInterface wrapper that only forwards log messages
  */
-class WrappedUserInterface : public UserInterface
+class WrappedUserInterface : public DefaultUserInterface
 {
 public:
   WrappedUserInterface(UserInterface& ui, const std::string& prefix);
@@ -41,8 +41,8 @@ public:
 private:
   UserInterface& m_ui;
   std::string m_prefix;
-  void UpdateInstructionStatusImpl(const Instruction* instruction) override;
-  void LogImpl(int severity, const std::string& message) override;
+  void UpdateInstructionStatus(const Instruction* instruction) override;
+  void Log(int severity, const std::string& message) override;
 };
 
 }  // namespace sequencer

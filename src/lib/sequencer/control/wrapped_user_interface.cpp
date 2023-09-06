@@ -32,12 +32,12 @@ WrappedUserInterface::WrappedUserInterface(UserInterface& ui, const std::string&
 
 WrappedUserInterface::~WrappedUserInterface() = default;
 
-void WrappedUserInterface::UpdateInstructionStatusImpl(const Instruction* instruction)
+void WrappedUserInterface::UpdateInstructionStatus(const Instruction* instruction)
 {
   (void)instruction;
 }
 
-void WrappedUserInterface::LogImpl(int severity, const std::string& message)
+void WrappedUserInterface::Log(int severity, const std::string& message)
 {
   std::string wrapped_message = m_prefix + message;
   m_ui.Log(severity, wrapped_message);
