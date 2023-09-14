@@ -93,7 +93,7 @@ TEST_F(AchieveConditionTest, Setup)
     EXPECT_THROW(proc->Setup(), InstructionSetupException);
   }
   {
-    // One child
+    // One child is ok
     const std::string body{R"(
       <AchieveCondition>
           <Wait timeout="1.0"/>
@@ -103,7 +103,7 @@ TEST_F(AchieveConditionTest, Setup)
       </Workspace>)"};
 
     auto proc = ParseProcedureString(test::CreateProcedureString(body));
-    EXPECT_THROW(proc->Setup(), InstructionSetupException);
+    EXPECT_NO_THROW(proc->Setup());
   }
   {
     // Three children
@@ -156,12 +156,50 @@ TEST_F(AchieveConditionTest, OverrideSuccess)
   EXPECT_EQ(ui.m_main_text, "Condition is still not satisfied. Please select action.");
 }
 
+TEST_F(AchieveConditionTest, OverrideSuccessNoAction)
+{
+  const std::string body{R"(
+    <AchieveCondition>
+        <Equals lhs="live" rhs="one"/>
+    </AchieveCondition>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::TestUserInputInterface ui;
+  ui.SetUserChoices({ 0, 0, 1});
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui));
+  EXPECT_EQ(ui.m_main_text, "Condition is still not satisfied. Please select action.");
+}
+
 TEST_F(AchieveConditionTest, AbortFailure)
 {
   const std::string body{R"(
     <AchieveCondition dialogText="AbortPlease">
         <Equals lhs="live" rhs="one"/>
         <Wait/>
+    </AchieveCondition>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::TestUserInputInterface ui;
+  ui.SetUserChoices({ 0, 0, 2});
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  EXPECT_EQ(ui.m_main_text, "AbortPlease");
+}
+
+TEST_F(AchieveConditionTest, AbortFailureNoAction)
+{
+  const std::string body{R"(
+    <AchieveCondition dialogText="AbortPlease">
+        <Equals lhs="live" rhs="one"/>
     </AchieveCondition>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />

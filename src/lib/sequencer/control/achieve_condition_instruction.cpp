@@ -56,10 +56,10 @@ void AchieveConditionInstruction::SetupImpl(const Procedure& proc)
 {
   (void)proc;
   auto children = ChildInstructions();
-  if (children.size() != 2)
+  if (children.size() < 1 || children.size() > 2)
   {
     std::string error_message = InstructionErrorProlog(*this) +
-      "This compound instruction requires exactly two child instructions";
+      "This compound instruction requires either one or two child instructions";
     throw InstructionSetupException(error_message);
   }
   SetupChildren(proc);
@@ -75,14 +75,14 @@ ExecutionStatus AchieveConditionInstruction::ExecuteSingleImpl(UserInterface& ui
     children[0]->ExecuteSingle(ui, ws);
     return CalculateCompoundStatus();
   }
-  if (!m_user_decision_needed)
+  if (ActionNeeded())
   {
     return HandleAction(ui, ws);
   }
   switch (GetUserInput(ui))
   {
   case kRetry:
-    m_user_decision_needed = false;
+    ResetHook();
     return ExecutionStatus::NOT_FINISHED;
   case kOverride:
     return ExecutionStatus::SUCCESS;
@@ -108,12 +108,8 @@ std::vector<const Instruction*> AchieveConditionInstruction::NextInstructionsImp
   {
     result.push_back(condition);
   }
-  else
+  else if (ActionNeeded())
   {
-    if (m_user_decision_needed)
-    {
-      return result;
-    }
     auto action = children[1];
     auto action_status = action->GetStatus();
     if (ReadyForExecute(action_status))
@@ -122,6 +118,16 @@ std::vector<const Instruction*> AchieveConditionInstruction::NextInstructionsImp
     }
   }
   return result;
+}
+
+bool AchieveConditionInstruction::ActionDefined() const
+{
+  return ChildrenCount() == 2;
+}
+
+bool AchieveConditionInstruction::ActionNeeded() const
+{
+  return !m_user_decision_needed && ActionDefined();
 }
 
 ExecutionStatus AchieveConditionInstruction::HandleAction(UserInterface& ui, Workspace& ws)
@@ -177,9 +183,9 @@ ExecutionStatus AchieveConditionInstruction::CalculateCompoundStatus() const
 {
   auto children = ChildInstructions();
   auto condition = children[0];
-  auto action = children[1];
   auto condition_status = condition->GetStatus();
-  auto action_status = action->GetStatus();
+  auto action_status = ActionDefined() ? children[1]->GetStatus()
+                                       : ExecutionStatus::NOT_STARTED;
   // When condition failed, compound status depends on other child:
   if (condition_status != ExecutionStatus::FAILURE)
   {

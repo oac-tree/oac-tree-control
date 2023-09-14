@@ -34,13 +34,14 @@ namespace sequencer
 {
 
 /**
- * @brief Try to achieve a condition. If it is already satisfied, returns SUCCESS. Otherwise, it
- * executes an action to achieve the condition. If this still fails, the user gets the option to
+ * @brief Try to achieve a condition. If it is already satisfied, returns SUCCESS. Otherwise, if
+ * present, it executes an action to achieve the condition. If this still fails, or there was no
+ * action defined (only one child instruction), the user gets the option to
  * retry again, override the decision (return SUCCESS) or terminate (return FAILURE).
  *
- * @details This compound instruction expects exactly two child instructions: the first one is the
- * condition to achieve and the second one is the instruction (or tree) to execute when the
- * condition is not (yet) satisfied.
+ * @details This compound instruction expects either one or two child instructions: the first one
+ * is the condition to achieve and the second one, which is optional, is the instruction (or tree)
+ * to execute when the condition is not (yet) satisfied.
  */
 class AchieveConditionInstruction : public CompoundInstruction
 {
@@ -62,6 +63,8 @@ private:
   void ResetHook() override;
   std::vector<const Instruction*> NextInstructionsImpl() const override;
 
+  bool ActionDefined() const;
+  bool ActionNeeded() const;
   ExecutionStatus HandleAction(UserInterface& ui, Workspace& ws);
   UserDecision GetUserInput(UserInterface& ui) const;
   std::vector<std::string> GetUserChoices() const;
