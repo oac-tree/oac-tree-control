@@ -213,3 +213,28 @@ TEST_F(AchieveConditionTest, AbortFailureNoAction)
   EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
   EXPECT_EQ(ui.m_main_text, "AbortPlease");
 }
+
+TEST_F(AchieveConditionTest, KeepRetryingNoAction)
+{
+  const std::string body{R"(
+    <ParallelSequence>
+        <AchieveCondition varNames="live">
+            <Equals lhs="live" rhs="one"/>
+        </AchieveCondition>
+        <Sequence>
+            <Wait timeout="0.5"/>
+            <Copy input="one" output="live"/>
+        </Sequence>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="zero" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::TestUserInputInterface ui;
+  ui.SetUserChoices({ 0 });
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui));
+}
