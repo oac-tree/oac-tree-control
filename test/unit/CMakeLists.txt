@@ -2,7 +2,8 @@ add_executable(unit-tests)
 
 target_sources(unit-tests
   PRIVATE
-  achieve_condition_override_tests.cpp
+  achieve_condition_tests.cpp
+  achieve_condition_with_override_tests.cpp
   execute_while_tests.cpp
   test_user_interface.cpp
   unit_test_helper.cpp

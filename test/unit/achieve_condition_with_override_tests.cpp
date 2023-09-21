@@ -57,16 +57,37 @@ TEST_F(AchieveConditionWithOverrideTest, DirectSuccess)
 TEST_F(AchieveConditionWithOverrideTest, SuccessAfterAction)
 {
   const std::string body{R"(
-    <ParallelSequence>
-        <AchieveConditionWithOverride varNames="live">
-            <Equals lhs="live" rhs="one"/>
-            <Wait timeout="1.0"/>
-        </AchieveConditionWithOverride>
+    <AchieveConditionWithOverride>
+        <Equals lhs="live" rhs="one"/>
+        <Copy input="one" output="live"/>
+    </AchieveConditionWithOverride>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="zero" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::NullUserInterface ui;
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui));
+}
+
+TEST_F(AchieveConditionWithOverrideTest, SuccessAfterCompoundAction)
+{
+  const std::string body{R"(
+    <AchieveConditionWithOverride>
         <Sequence>
-            <Wait timeout="0.2"/>
+            <Wait/>
+            <Wait/>
+            <Equals lhs="live" rhs="one"/>
+        </Sequence>
+        <Sequence>
+            <Wait/>
+            <Wait/>
             <Copy input="one" output="live"/>
         </Sequence>
-    </ParallelSequence>
+    </AchieveConditionWithOverride>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
         <Local name="zero" type='{"type":"uint64"}' value='0' />
@@ -218,7 +239,7 @@ TEST_F(AchieveConditionWithOverrideTest, KeepRetryingNoAction)
 {
   const std::string body{R"(
     <ParallelSequence>
-        <AchieveConditionWithOverride varNames="live">
+        <AchieveConditionWithOverride>
             <Equals lhs="live" rhs="one"/>
         </AchieveConditionWithOverride>
         <Sequence>

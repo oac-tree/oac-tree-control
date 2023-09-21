@@ -6,18 +6,18 @@
     <Plugin>libsequencer-control.so</Plugin>
     <Sequence>
         <ParallelSequence successThreshold="1" failureThreshold="2">
-            <AchieveCondition>
+            <AchieveConditionWithOverride>
                 <Equals lhs="live" rhs="one"/>
                 <Wait timeout="1.0"/>
-            </AchieveCondition>
+            </AchieveConditionWithOverride>
             <Inverter>
                 <Sequence>
-                    <Wait timeout="0.2"/>
+                    <Wait timeout="2.0"/>
                     <Copy input="one" output="live"/>
                 </Sequence>
             </Inverter>
         </ParallelSequence>
-        <Message text="AchieveCondition successful!"/>
+        <Message text="AchieveConditionWithOverride successful!"/>
     </Sequence>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
