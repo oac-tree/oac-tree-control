@@ -21,7 +21,6 @@
 
 #include "achieve_condition_instruction.h"
 
-#include <sup/sequencer/constants.h>
 #include <sup/sequencer/instruction_registry.h>
 #include <sup/sequencer/instruction_utils.h>
 #include <sup/sequencer/user_interface.h>
@@ -34,21 +33,10 @@ const std::string AchieveConditionInstruction::Type = "AchieveCondition";
 static bool _achieve_condition_initialised_flag =
   RegisterGlobalInstruction<AchieveConditionInstruction>();
 
-const std::string MAIN_DIALOG_TEXT_ATTRIBUTE = "dialogText";
-const std::string MAIN_DIALOG_TEXT_DEFAULT =
-  "Condition is still not satisfied. Please select action.";
-
-const std::string RETRY_TEXT_DEFAULT = "Retry";
-const std::string OVERRIDE_TEXT_DEFAULT = "Override";
-const std::string ABORT_TEXT_DEFAULT = "Abort";
-
-
 AchieveConditionInstruction::AchieveConditionInstruction()
   : CompoundInstruction(Type)
-  , m_user_decision_needed{false}
-{
-  AddAttributeDefinition(MAIN_DIALOG_TEXT_ATTRIBUTE, sup::dto::StringType);
-}
+  , m_action_done{false}
+{}
 
 AchieveConditionInstruction::~AchieveConditionInstruction() = default;
 
@@ -56,10 +44,10 @@ void AchieveConditionInstruction::SetupImpl(const Procedure& proc)
 {
   (void)proc;
   auto children = ChildInstructions();
-  if (children.size() < 1 || children.size() > 2)
+  if (children.size() != 2)
   {
     std::string error_message = InstructionErrorProlog(*this) +
-      "This compound instruction requires either one or two child instructions";
+      "This compound instruction requires exactly two child instructions";
     throw InstructionSetupException(error_message);
   }
   SetupChildren(proc);
@@ -75,27 +63,17 @@ ExecutionStatus AchieveConditionInstruction::ExecuteSingleImpl(UserInterface& ui
     children[0]->ExecuteSingle(ui, ws);
     return CalculateCompoundStatus();
   }
-  if (ActionNeeded())
+  if (!m_action_done)
   {
-    return HandleAction(ui, ws);
+    HandleAction(ui, ws);
   }
-  switch (GetUserInput(ui))
-  {
-  case kRetry:
-    ResetHook();
-    return ExecutionStatus::NOT_FINISHED;
-  case kOverride:
-    return ExecutionStatus::SUCCESS;
-  default:
-    break;
-  }
-  return ExecutionStatus::FAILURE;
+  return CalculateCompoundStatus();
 }
 
 void AchieveConditionInstruction::ResetHook()
 {
   ResetChildren();
-  m_user_decision_needed = false;
+  m_action_done = false;
 }
 
 std::vector<const Instruction*> AchieveConditionInstruction::NextInstructionsImpl() const
@@ -108,7 +86,7 @@ std::vector<const Instruction*> AchieveConditionInstruction::NextInstructionsImp
   {
     result.push_back(condition);
   }
-  else if (ActionNeeded())
+  if (IsFinishedStatus(condition_status) && !m_action_done)
   {
     auto action = children[1];
     auto action_status = action->GetStatus();
@@ -120,17 +98,7 @@ std::vector<const Instruction*> AchieveConditionInstruction::NextInstructionsImp
   return result;
 }
 
-bool AchieveConditionInstruction::ActionDefined() const
-{
-  return ChildrenCount() == 2;
-}
-
-bool AchieveConditionInstruction::ActionNeeded() const
-{
-  return !m_user_decision_needed && ActionDefined();
-}
-
-ExecutionStatus AchieveConditionInstruction::HandleAction(UserInterface& ui, Workspace& ws)
+void AchieveConditionInstruction::HandleAction(UserInterface& ui, Workspace& ws)
 {
   auto children = ChildInstructions();
   auto action = children[1];
@@ -143,40 +111,8 @@ ExecutionStatus AchieveConditionInstruction::HandleAction(UserInterface& ui, Wor
   if (IsFinishedStatus(action_status))
   {
     ResetChildren();
-    m_user_decision_needed = true;
+    m_action_done = true;
   }
-  return CalculateCompoundStatus();
-}
-
-AchieveConditionInstruction::UserDecision
-AchieveConditionInstruction::GetUserInput(UserInterface &ui) const
-{
-  static std::map<int, UserDecision> decision_map = {
-      {0, kRetry},
-      {1, kOverride},
-      {2, kFail}};
-  std::string main_text = HasAttribute(MAIN_DIALOG_TEXT_ATTRIBUTE)
-                            ? GetAttributeValue<std::string>(MAIN_DIALOG_TEXT_ATTRIBUTE)
-                            : MAIN_DIALOG_TEXT_DEFAULT;
-  auto metadata = CreateUserChoiceMetadata();
-  metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, main_text);
-  metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
-                     {sup::dto::UnsignedInteger32Type, dialog_type::kSelection});
-  auto options = GetUserChoices();
-  int choice = ui.GetUserChoice(options, metadata);
-  if (choice < 0 || choice >= 3)
-  {
-    std::string warning_message = InstructionWarningProlog(*this) +
-      "user choice [" + std::to_string(choice) + "] is invalid. Valid values are 0, 1 or 2.";
-    ui.LogWarning(warning_message);
-    return kFail;
-  }
-  return decision_map[choice];
-}
-
-std::vector<std::string> AchieveConditionInstruction::GetUserChoices() const
-{
-  return { RETRY_TEXT_DEFAULT, OVERRIDE_TEXT_DEFAULT, ABORT_TEXT_DEFAULT };
 }
 
 ExecutionStatus AchieveConditionInstruction::CalculateCompoundStatus() const
@@ -184,15 +120,15 @@ ExecutionStatus AchieveConditionInstruction::CalculateCompoundStatus() const
   auto children = ChildInstructions();
   auto condition = children[0];
   auto condition_status = condition->GetStatus();
-  auto action_status = ActionDefined() ? children[1]->GetStatus()
-                                       : ExecutionStatus::NOT_STARTED;
-  // When condition failed, compound status depends on other child:
-  if (condition_status != ExecutionStatus::FAILURE)
+  // When condition did not fail (yet) or the action was already performed, return its status.
+  if (condition_status != ExecutionStatus::FAILURE || m_action_done)
   {
     return condition_status;
   }
-  // Only the running state needs to be propagated, since in all other cases, the compound
-  // instruction is not finished or the status is directly determined by the user's response.
+  // Otherwise return that status of the action.
+  auto action = children[1];
+  auto action_status = action->GetStatus();
+  return action->GetStatus();
   if (action_status == ExecutionStatus::RUNNING)
   {
     return ExecutionStatus::RUNNING;

@@ -11,13 +11,14 @@ set_target_properties(sequencer-control PROPERTIES
 
 target_sources(sequencer-control
   PRIVATE
-  achieve_condition_instruction.cpp
-  context_override_instruction_wrapper.cpp
-  execute_while_instruction.cpp
-  non_owning_instruction_wrapper.cpp
-  wait_for_condition_instruction.cpp
-  wrapped_instruction_manager.cpp
-  wrapped_user_interface.cpp
+    achieve_condition_instruction.cpp
+    achieve_condition_with_override_instruction.cpp
+    context_override_instruction_wrapper.cpp
+    execute_while_instruction.cpp
+    non_owning_instruction_wrapper.cpp
+    wait_for_condition_instruction.cpp
+    wrapped_instruction_manager.cpp
+    wrapped_user_interface.cpp
 )
 
 target_include_directories(sequencer-control PUBLIC

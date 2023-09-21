@@ -9,10 +9,10 @@
             <Sequence>
                 <Copy input="zero" output="live"/>
                 <ParallelSequence successThreshold="1" failureThreshold="2">
-                    <AchieveCondition varNames="live">
+                    <AchieveConditionWithOverride varNames="live">
                         <Equals lhs="live" rhs="one"/>
                         <Wait timeout="1.0"/>
-                    </AchieveCondition>
+                    </AchieveConditionWithOverride>
                     <Inverter>
                         <Sequence>
                             <Wait timeout="2.0"/>
@@ -20,10 +20,10 @@
                         </Sequence>
                     </Inverter>
                 </ParallelSequence>
-                <Message text="Single AchieveCondition successful!"/>
+                <Message text="Single AchieveConditionWithOverride successful!"/>
             </Sequence>
         </Repeat>
-        <Message text="Repeated AchieveCondition successful!"/>
+        <Message text="Repeated AchieveConditionWithOverride successful!"/>
     </Sequence>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />

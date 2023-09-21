@@ -29,20 +29,20 @@
 
 using namespace sup::sequencer;
 
-class AchieveConditionTest : public ::testing::Test
+class AchieveConditionWithOverrideTest : public ::testing::Test
 {
 protected:
-  AchieveConditionTest() = default;
-  virtual ~AchieveConditionTest() = default;
+  AchieveConditionWithOverrideTest() = default;
+  virtual ~AchieveConditionWithOverrideTest() = default;
 };
 
-TEST_F(AchieveConditionTest, DirectSuccess)
+TEST_F(AchieveConditionWithOverrideTest, DirectSuccess)
 {
   const std::string body{R"(
-    <AchieveCondition>
+    <AchieveConditionWithOverride>
         <Equals lhs="live" rhs="zero"/>
         <Wait timeout="0.2"/>
-    </AchieveCondition>
+    </AchieveConditionWithOverride>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
         <Local name="zero" type='{"type":"uint64"}' value='0' />
@@ -54,14 +54,14 @@ TEST_F(AchieveConditionTest, DirectSuccess)
   EXPECT_TRUE(test::TryAndExecute(proc, ui));
 }
 
-TEST_F(AchieveConditionTest, SuccessAfterAction)
+TEST_F(AchieveConditionWithOverrideTest, SuccessAfterAction)
 {
   const std::string body{R"(
     <ParallelSequence>
-        <AchieveCondition varNames="live">
+        <AchieveConditionWithOverride varNames="live">
             <Equals lhs="live" rhs="one"/>
             <Wait timeout="1.0"/>
-        </AchieveCondition>
+        </AchieveConditionWithOverride>
         <Sequence>
             <Wait timeout="0.2"/>
             <Copy input="one" output="live"/>
@@ -79,12 +79,12 @@ TEST_F(AchieveConditionTest, SuccessAfterAction)
   EXPECT_TRUE(test::TryAndExecute(proc, ui));
 }
 
-TEST_F(AchieveConditionTest, Setup)
+TEST_F(AchieveConditionWithOverrideTest, Setup)
 {
   {
     // No children
     const std::string body{R"(
-      <AchieveCondition/>
+      <AchieveConditionWithOverride/>
       <Workspace>
           <Local name="live" type='{"type":"uint64"}' value='0' />
       </Workspace>)"};
@@ -95,9 +95,9 @@ TEST_F(AchieveConditionTest, Setup)
   {
     // One child is ok
     const std::string body{R"(
-      <AchieveCondition>
+      <AchieveConditionWithOverride>
           <Wait timeout="1.0"/>
-      </AchieveCondition>
+      </AchieveConditionWithOverride>
       <Workspace>
           <Local name="live" type='{"type":"uint64"}' value='0' />
       </Workspace>)"};
@@ -108,11 +108,11 @@ TEST_F(AchieveConditionTest, Setup)
   {
     // Three children
     const std::string body{R"(
-      <AchieveCondition>
+      <AchieveConditionWithOverride>
           <Wait timeout="1.0"/>
           <Wait timeout="2.0"/>
           <Wait timeout="3.0"/>
-      </AchieveCondition>
+      </AchieveConditionWithOverride>
       <Workspace>
           <Local name="live" type='{"type":"uint64"}' value='0' />
       </Workspace>)"};
@@ -122,7 +122,7 @@ TEST_F(AchieveConditionTest, Setup)
   }
   {
     // Missing mandatory attribute
-    auto instr = GlobalInstructionRegistry().Create("AchieveCondition");
+    auto instr = GlobalInstructionRegistry().Create("AchieveConditionWithOverride");
     auto wait_1 = GlobalInstructionRegistry().Create("Wait");
     auto wait_2 = GlobalInstructionRegistry().Create("Wait");
     ASSERT_TRUE(instr);
@@ -136,13 +136,13 @@ TEST_F(AchieveConditionTest, Setup)
   }
 }
 
-TEST_F(AchieveConditionTest, OverrideSuccess)
+TEST_F(AchieveConditionWithOverrideTest, OverrideSuccess)
 {
   const std::string body{R"(
-    <AchieveCondition>
+    <AchieveConditionWithOverride>
         <Equals lhs="live" rhs="one"/>
         <Wait/>
-    </AchieveCondition>
+    </AchieveConditionWithOverride>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
         <Local name="one" type='{"type":"uint64"}' value='1' />
@@ -156,12 +156,12 @@ TEST_F(AchieveConditionTest, OverrideSuccess)
   EXPECT_EQ(ui.m_main_text, "Condition is still not satisfied. Please select action.");
 }
 
-TEST_F(AchieveConditionTest, OverrideSuccessNoAction)
+TEST_F(AchieveConditionWithOverrideTest, OverrideSuccessNoAction)
 {
   const std::string body{R"(
-    <AchieveCondition>
+    <AchieveConditionWithOverride>
         <Equals lhs="live" rhs="one"/>
-    </AchieveCondition>
+    </AchieveConditionWithOverride>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
         <Local name="one" type='{"type":"uint64"}' value='1' />
@@ -175,13 +175,13 @@ TEST_F(AchieveConditionTest, OverrideSuccessNoAction)
   EXPECT_EQ(ui.m_main_text, "Condition is still not satisfied. Please select action.");
 }
 
-TEST_F(AchieveConditionTest, AbortFailure)
+TEST_F(AchieveConditionWithOverrideTest, AbortFailure)
 {
   const std::string body{R"(
-    <AchieveCondition dialogText="AbortPlease">
+    <AchieveConditionWithOverride dialogText="AbortPlease">
         <Equals lhs="live" rhs="one"/>
         <Wait/>
-    </AchieveCondition>
+    </AchieveConditionWithOverride>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
         <Local name="one" type='{"type":"uint64"}' value='1' />
@@ -195,12 +195,12 @@ TEST_F(AchieveConditionTest, AbortFailure)
   EXPECT_EQ(ui.m_main_text, "AbortPlease");
 }
 
-TEST_F(AchieveConditionTest, AbortFailureNoAction)
+TEST_F(AchieveConditionWithOverrideTest, AbortFailureNoAction)
 {
   const std::string body{R"(
-    <AchieveCondition dialogText="AbortPlease">
+    <AchieveConditionWithOverride dialogText="AbortPlease">
         <Equals lhs="live" rhs="one"/>
-    </AchieveCondition>
+    </AchieveConditionWithOverride>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
         <Local name="one" type='{"type":"uint64"}' value='1' />
@@ -214,13 +214,13 @@ TEST_F(AchieveConditionTest, AbortFailureNoAction)
   EXPECT_EQ(ui.m_main_text, "AbortPlease");
 }
 
-TEST_F(AchieveConditionTest, KeepRetryingNoAction)
+TEST_F(AchieveConditionWithOverrideTest, KeepRetryingNoAction)
 {
   const std::string body{R"(
     <ParallelSequence>
-        <AchieveCondition varNames="live">
+        <AchieveConditionWithOverride varNames="live">
             <Equals lhs="live" rhs="one"/>
-        </AchieveCondition>
+        </AchieveConditionWithOverride>
         <Sequence>
             <Wait timeout="0.5"/>
             <Copy input="one" output="live"/>
