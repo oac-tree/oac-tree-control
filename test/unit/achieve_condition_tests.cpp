@@ -100,6 +100,52 @@ TEST_F(AchieveConditionTest, SuccessAfterCompoundAction)
   EXPECT_TRUE(test::TryAndExecute(proc, ui));
 }
 
+TEST_F(AchieveConditionTest, FailAfterAction)
+{
+  const std::string body{R"(
+    <AchieveCondition>
+        <Equals lhs="live" rhs="one"/>
+        <Copy input="zero" output="live"/>
+    </AchieveCondition>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="zero" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::NullUserInterface ui;
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST_F(AchieveConditionTest,FailAfterCompoundAction)
+{
+  const std::string body{R"(
+    <AchieveCondition>
+        <Sequence>
+            <Wait/>
+            <Wait/>
+            <Equals lhs="live" rhs="one"/>
+        </Sequence>
+        <Sequence>
+            <Wait/>
+            <Wait/>
+            <Copy input="zero" output="live"/>
+        </Sequence>
+    </AchieveCondition>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="zero" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::NullUserInterface ui;
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
 TEST_F(AchieveConditionTest, Setup)
 {
   {
