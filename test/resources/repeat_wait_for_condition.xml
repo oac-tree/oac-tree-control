@@ -7,14 +7,14 @@
     <Sequence>
         <Repeat maxCount="3">
             <Sequence>
-                <Copy input="zero" output="live"/>
+                <Copy inputVar="zero" outputVar="live"/>
                 <ParallelSequence>
                     <WaitForCondition varNames="live" timeout="1.0">
-                        <Equals lhs="live" rhs="one"/>
+                        <Equals leftVar="live" rightVar="one"/>
                     </WaitForCondition>
                     <Sequence>
                         <Wait timeout="0.2"/>
-                        <Copy input="one" output="live"/>
+                        <Copy inputVar="one" outputVar="live"/>
                     </Sequence>
                 </ParallelSequence>
             </Sequence>

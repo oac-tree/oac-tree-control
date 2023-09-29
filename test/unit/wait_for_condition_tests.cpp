@@ -41,11 +41,11 @@ TEST_F(WaitForConditionTest, Success)
   const std::string body{R"(
     <ParallelSequence>
         <WaitForCondition varNames="live" timeout="1.0">
-            <Equals lhs="live" rhs="one"/>
+            <Equals leftVar="live" rightVar="one"/>
         </WaitForCondition>
         <Sequence>
             <Wait timeout="0.1"/>
-            <Copy input="one" output="live"/>
+            <Copy inputVar="one" outputVar="live"/>
         </Sequence>
     </ParallelSequence>
     <Workspace>
@@ -93,11 +93,11 @@ TEST_F(WaitForConditionTest, Failure)
   const std::string body{R"(
     <ParallelSequence>
         <WaitForCondition varNames="live" timeout="0.1">
-            <Equals lhs="live" rhs="one"/>
+            <Equals leftVar="live" rightVar="one"/>
         </WaitForCondition>
         <Sequence>
             <Wait timeout="1.0"/>
-            <Copy input="one" output="live"/>
+            <Copy inputVar="one" outputVar="live"/>
         </Sequence>
     </ParallelSequence>
     <Workspace>

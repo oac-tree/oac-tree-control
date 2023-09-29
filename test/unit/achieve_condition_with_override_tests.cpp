@@ -40,7 +40,7 @@ TEST_F(AchieveConditionWithOverrideTest, DirectSuccess)
 {
   const std::string body{R"(
     <AchieveConditionWithOverride>
-        <Equals lhs="live" rhs="zero"/>
+        <Equals leftVar="live" rightVar="zero"/>
         <Wait timeout="0.2"/>
     </AchieveConditionWithOverride>
     <Workspace>
@@ -58,8 +58,8 @@ TEST_F(AchieveConditionWithOverrideTest, SuccessAfterAction)
 {
   const std::string body{R"(
     <AchieveConditionWithOverride>
-        <Equals lhs="live" rhs="one"/>
-        <Copy input="one" output="live"/>
+        <Equals leftVar="live" rightVar="one"/>
+        <Copy inputVar="one" outputVar="live"/>
     </AchieveConditionWithOverride>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
@@ -80,12 +80,12 @@ TEST_F(AchieveConditionWithOverrideTest, SuccessAfterCompoundAction)
         <Sequence>
             <Wait/>
             <Wait/>
-            <Equals lhs="live" rhs="one"/>
+            <Equals leftVar="live" rightVar="one"/>
         </Sequence>
         <Sequence>
             <Wait/>
             <Wait/>
-            <Copy input="one" output="live"/>
+            <Copy inputVar="one" outputVar="live"/>
         </Sequence>
     </AchieveConditionWithOverride>
     <Workspace>
@@ -161,7 +161,7 @@ TEST_F(AchieveConditionWithOverrideTest, OverrideSuccess)
 {
   const std::string body{R"(
     <AchieveConditionWithOverride>
-        <Equals lhs="live" rhs="one"/>
+        <Equals leftVar="live" rightVar="one"/>
         <Wait/>
     </AchieveConditionWithOverride>
     <Workspace>
@@ -181,7 +181,7 @@ TEST_F(AchieveConditionWithOverrideTest, OverrideSuccessNoAction)
 {
   const std::string body{R"(
     <AchieveConditionWithOverride>
-        <Equals lhs="live" rhs="one"/>
+        <Equals leftVar="live" rightVar="one"/>
     </AchieveConditionWithOverride>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
@@ -200,7 +200,7 @@ TEST_F(AchieveConditionWithOverrideTest, AbortFailure)
 {
   const std::string body{R"(
     <AchieveConditionWithOverride dialogText="AbortPlease">
-        <Equals lhs="live" rhs="one"/>
+        <Equals leftVar="live" rightVar="one"/>
         <Wait/>
     </AchieveConditionWithOverride>
     <Workspace>
@@ -220,7 +220,7 @@ TEST_F(AchieveConditionWithOverrideTest, AbortFailureNoAction)
 {
   const std::string body{R"(
     <AchieveConditionWithOverride dialogText="AbortPlease">
-        <Equals lhs="live" rhs="one"/>
+        <Equals leftVar="live" rightVar="one"/>
     </AchieveConditionWithOverride>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
@@ -240,11 +240,11 @@ TEST_F(AchieveConditionWithOverrideTest, KeepRetryingNoAction)
   const std::string body{R"(
     <ParallelSequence>
         <AchieveConditionWithOverride>
-            <Equals lhs="live" rhs="one"/>
+            <Equals leftVar="live" rightVar="one"/>
         </AchieveConditionWithOverride>
         <Sequence>
             <Wait timeout="0.5"/>
-            <Copy input="one" output="live"/>
+            <Copy inputVar="one" outputVar="live"/>
         </Sequence>
     </ParallelSequence>
     <Workspace>

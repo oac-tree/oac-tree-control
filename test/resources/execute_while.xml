@@ -8,12 +8,12 @@
         <ParallelSequence successThreshold="1">
             <ExecuteWhile varNames="live">
                 <Wait timeout="1.0"/>
-                <Equals lhs="live" rhs="zero"/>
+                <Equals leftVar="live" rightVar="zero"/>
             </ExecuteWhile>
             <Inverter>
                 <Sequence>
                     <Wait timeout="2.0"/>
-                    <Copy input="one" output="live"/>
+                    <Copy inputVar="one" outputVar="live"/>
                 </Sequence>
             </Inverter>
         </ParallelSequence>

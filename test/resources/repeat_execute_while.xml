@@ -8,7 +8,7 @@
         <Repeat maxCount="3">
             <ExecuteWhile varNames="live">
                 <Wait timeout="0.2"/>
-                <Equals lhs="live" rhs="zero"/>
+                <Equals leftVar="live" rightVar="zero"/>
             </ExecuteWhile>
         </Repeat>
         <Message text="ExecuteWhile successful!"/>

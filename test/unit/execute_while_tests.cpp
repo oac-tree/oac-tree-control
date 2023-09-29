@@ -41,7 +41,7 @@ TEST_F(ExecuteWhileTest, Success)
   const std::string body{R"(
     <ExecuteWhile varNames="live">
         <Wait timeout="0.2"/>
-        <Equals lhs="live" rhs="zero"/>
+        <Equals leftVar="live" rightVar="zero"/>
     </ExecuteWhile>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
@@ -119,12 +119,12 @@ TEST_F(ExecuteWhileTest, Failure)
     <ParallelSequence successThreshold="1">
         <ExecuteWhile varNames="live">
             <Wait timeout="1.0"/>
-            <Equals lhs="live" rhs="zero"/>
+            <Equals leftVar="live" rightVar="zero"/>
         </ExecuteWhile>
         <Inverter>
             <Sequence>
                 <Wait timeout="0.1"/>
-                <Copy input="one" output="live"/>
+                <Copy inputVar="one" outputVar="live"/>
             </Sequence>
         </Inverter>
     </ParallelSequence>

@@ -40,7 +40,7 @@ TEST_F(AchieveConditionTest, DirectSuccess)
 {
   const std::string body{R"(
     <AchieveCondition>
-        <Equals lhs="live" rhs="zero"/>
+        <Equals leftVar="live" rightVar="zero"/>
         <Wait timeout="0.2"/>
     </AchieveCondition>
     <Workspace>
@@ -58,8 +58,8 @@ TEST_F(AchieveConditionTest, SuccessAfterAction)
 {
   const std::string body{R"(
     <AchieveCondition>
-        <Equals lhs="live" rhs="one"/>
-        <Copy input="one" output="live"/>
+        <Equals leftVar="live" rightVar="one"/>
+        <Copy inputVar="one" outputVar="live"/>
     </AchieveCondition>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
@@ -80,12 +80,12 @@ TEST_F(AchieveConditionTest, SuccessAfterCompoundAction)
         <Sequence>
             <Wait/>
             <Wait/>
-            <Equals lhs="live" rhs="one"/>
+            <Equals leftVar="live" rightVar="one"/>
         </Sequence>
         <Sequence>
             <Wait/>
             <Wait/>
-            <Copy input="one" output="live"/>
+            <Copy inputVar="one" outputVar="live"/>
         </Sequence>
     </AchieveCondition>
     <Workspace>
@@ -104,8 +104,8 @@ TEST_F(AchieveConditionTest, FailAfterAction)
 {
   const std::string body{R"(
     <AchieveCondition>
-        <Equals lhs="live" rhs="one"/>
-        <Copy input="zero" output="live"/>
+        <Equals leftVar="live" rightVar="one"/>
+        <Copy inputVar="zero" outputVar="live"/>
     </AchieveCondition>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
@@ -126,12 +126,12 @@ TEST_F(AchieveConditionTest,FailAfterCompoundAction)
         <Sequence>
             <Wait/>
             <Wait/>
-            <Equals lhs="live" rhs="one"/>
+            <Equals leftVar="live" rightVar="one"/>
         </Sequence>
         <Sequence>
             <Wait/>
             <Wait/>
-            <Copy input="zero" output="live"/>
+            <Copy inputVar="zero" outputVar="live"/>
         </Sequence>
     </AchieveCondition>
     <Workspace>

@@ -7,13 +7,13 @@
     <Sequence>
         <ParallelSequence successThreshold="1" failureThreshold="2">
             <AchieveCondition>
-                <Equals lhs="live" rhs="one"/>
+                <Equals leftVar="live" rightVar="one"/>
                 <Wait timeout="1.0"/>
             </AchieveCondition>
             <Inverter>
                 <Sequence>
                     <Wait timeout="0.2"/>
-                    <Copy input="one" output="live"/>
+                    <Copy inputVar="one" outputVar="live"/>
                 </Sequence>
             </Inverter>
         </ParallelSequence>
