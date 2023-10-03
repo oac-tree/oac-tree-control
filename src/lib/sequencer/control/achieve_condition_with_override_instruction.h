@@ -66,7 +66,7 @@ private:
   bool ActionDefined() const;
   bool ActionNeeded() const;
   ExecutionStatus HandleAction(UserInterface& ui, Workspace& ws);
-  UserDecision GetUserInput(UserInterface& ui) const;
+  UserDecision GetUserInput(const std::string& dialog_txt, UserInterface& ui) const;
   std::vector<std::string> GetUserChoices() const;
   ExecutionStatus CalculateCompoundStatus() const;
 };

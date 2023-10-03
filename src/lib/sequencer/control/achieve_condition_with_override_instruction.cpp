@@ -79,7 +79,13 @@ ExecutionStatus AchieveConditionWithOverrideInstruction::ExecuteSingleImpl(UserI
   {
     return HandleAction(ui, ws);
   }
-  switch (GetUserInput(ui))
+  std::string main_text = MAIN_DIALOG_TEXT_DEFAULT;
+  if (HasAttribute(MAIN_DIALOG_TEXT_ATTRIBUTE) &&
+      !GetVariableAttributeAs(MAIN_DIALOG_TEXT_ATTRIBUTE, ws, ui, main_text))
+  {
+    return ExecutionStatus::FAILURE;
+  }
+  switch (GetUserInput(main_text, ui))
   {
   case kRetry:
     ResetHook();
@@ -149,17 +155,14 @@ ExecutionStatus AchieveConditionWithOverrideInstruction::HandleAction(UserInterf
 }
 
 AchieveConditionWithOverrideInstruction::UserDecision
-AchieveConditionWithOverrideInstruction::GetUserInput(UserInterface &ui) const
+AchieveConditionWithOverrideInstruction::GetUserInput(const std::string& dialog_txt, UserInterface &ui) const
 {
   static std::map<int, UserDecision> decision_map = {
       {0, kRetry},
       {1, kOverride},
       {2, kFail}};
-  std::string main_text = HasAttribute(MAIN_DIALOG_TEXT_ATTRIBUTE)
-                            ? GetAttributeValue<std::string>(MAIN_DIALOG_TEXT_ATTRIBUTE)
-                            : MAIN_DIALOG_TEXT_DEFAULT;
   auto metadata = CreateUserChoiceMetadata();
-  metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, main_text);
+  metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, dialog_txt);
   metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
                      {sup::dto::UnsignedInteger32Type, dialog_type::kSelection});
   auto options = GetUserChoices();

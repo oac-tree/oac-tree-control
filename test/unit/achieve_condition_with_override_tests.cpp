@@ -259,3 +259,64 @@ TEST_F(AchieveConditionWithOverrideTest, KeepRetryingNoAction)
   auto proc = ParseProcedureString(test::CreateProcedureString(body));
   EXPECT_TRUE(test::TryAndExecute(proc, ui));
 }
+
+TEST_F(AchieveConditionWithOverrideTest, VariableDialogText)
+{
+  const std::string body{R"(
+    <AchieveConditionWithOverride dialogText="@text">
+        <Equals leftVar="live" rightVar="one"/>
+        <Wait/>
+    </AchieveConditionWithOverride>
+    <Workspace>
+        <Local name="text" type='{"type":"string"}' value='"Please decide what to do"' />
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::TestUserInputInterface ui;
+  ui.SetUserChoices({ 0, 0, 1});
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui));
+  EXPECT_EQ(ui.m_main_text, "Please decide what to do");
+}
+
+TEST_F(AchieveConditionWithOverrideTest, VariableDialogTextWrongType)
+{
+  const std::string body{R"(
+    <AchieveConditionWithOverride dialogText="@text">
+        <Equals leftVar="live" rightVar="one"/>
+        <Wait/>
+    </AchieveConditionWithOverride>
+    <Workspace>
+        <Local name="text" type='{"type":"float32"}' value='4.3' />
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::TestUserInputInterface ui;
+  ui.SetUserChoices({ 1});
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST_F(AchieveConditionWithOverrideTest, VariableDialogTextNotPresent)
+{
+  const std::string body{R"(
+    <AchieveConditionWithOverride dialogText="@text">
+        <Equals leftVar="live" rightVar="one"/>
+        <Wait/>
+    </AchieveConditionWithOverride>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::TestUserInputInterface ui;
+  ui.SetUserChoices({ 1});
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
