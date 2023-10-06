@@ -45,8 +45,9 @@ WaitForConditionInstruction::WaitForConditionInstruction()
   , m_internal_instruction_tree{}
   , m_instr_manager{}
 {
-  AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
-  AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type).SetMandatory();
+  AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME).SetMandatory();
+  AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type)
+    .SetCategory(AttributeCategory::kBoth).SetMandatory();
 }
 
 WaitForConditionInstruction::~WaitForConditionInstruction() = default;
@@ -101,8 +102,10 @@ std::unique_ptr<Instruction> WaitForConditionInstruction::CreateWrappedInstructi
   // Inverted wait with timeout branch
   auto wait = GlobalInstructionRegistry().Create("Wait");
   wait->AddAttribute("timeout", GetAttributeString(TIMEOUT_ATTR_NAME));
+  auto success_wait = GlobalInstructionRegistry().Create("ForceSuccess");
+  success_wait->InsertInstruction(std::move(wait), 0);
   auto inv_wait = GlobalInstructionRegistry().Create("Inverter");
-  inv_wait->InsertInstruction(std::move(wait), 0);
+  inv_wait->InsertInstruction(std::move(success_wait), 0);
 
   // Branch that listens and only exits with success when condition is satisfied
   auto wrapper = m_instr_manager.CreateInstructionWrapper(*children[0]);

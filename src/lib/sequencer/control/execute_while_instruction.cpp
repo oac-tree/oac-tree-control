@@ -44,7 +44,7 @@ ExecuteWhileInstruction::ExecuteWhileInstruction()
   , m_internal_instruction_tree{}
   , m_instr_manager{}
 {
-  AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME, sup::dto::StringType).SetMandatory();
+  AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME).SetMandatory();
 }
 
 ExecuteWhileInstruction::~ExecuteWhileInstruction() = default;

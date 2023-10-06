@@ -110,3 +110,74 @@ TEST_F(WaitForConditionTest, Failure)
   auto proc = ParseProcedureString(test::CreateProcedureString(body));
   EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
+
+TEST_F(WaitForConditionTest, VariableTimeout)
+{
+  const std::string body{R"(
+    <ParallelSequence>
+        <WaitForCondition varNames="live" timeout="@timeout">
+            <Equals leftVar="live" rightVar="one"/>
+        </WaitForCondition>
+        <Sequence>
+            <Wait timeout="0.1"/>
+            <Copy inputVar="one" outputVar="live"/>
+        </Sequence>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+        <Local name="timeout" type='{"type":"float64"}' value='1.0' />
+    </Workspace>
+)"};
+
+  test::NullUserInterface ui;
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui));
+}
+
+TEST_F(WaitForConditionTest, VariableTimeoutWrongType)
+{
+  const std::string body{R"(
+    <ParallelSequence>
+        <WaitForCondition varNames="live" timeout="@timeout">
+            <Equals leftVar="live" rightVar="one"/>
+        </WaitForCondition>
+        <Sequence>
+            <Wait timeout="0.1"/>
+            <Copy inputVar="one" outputVar="live"/>
+        </Sequence>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+        <Local name="timeout" type='{"type":"string"}' value='"3.0"' />
+    </Workspace>
+)"};
+
+  test::NullUserInterface ui;
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
+TEST_F(WaitForConditionTest, VariableTimeoutNotPresent)
+{
+  const std::string body{R"(
+    <ParallelSequence>
+        <WaitForCondition varNames="live" timeout="@timeout">
+            <Equals leftVar="live" rightVar="one"/>
+        </WaitForCondition>
+        <Sequence>
+            <Wait timeout="0.1"/>
+            <Copy inputVar="one" outputVar="live"/>
+        </Sequence>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::NullUserInterface ui;
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}

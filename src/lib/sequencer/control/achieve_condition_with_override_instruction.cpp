@@ -47,7 +47,7 @@ AchieveConditionWithOverrideInstruction::AchieveConditionWithOverrideInstruction
   : CompoundInstruction(Type)
   , m_user_decision_needed{false}
 {
-  AddAttributeDefinition(MAIN_DIALOG_TEXT_ATTRIBUTE, sup::dto::StringType);
+  AddAttributeDefinition(MAIN_DIALOG_TEXT_ATTRIBUTE).SetCategory(AttributeCategory::kBoth);
 }
 
 AchieveConditionWithOverrideInstruction::~AchieveConditionWithOverrideInstruction() = default;
@@ -80,8 +80,7 @@ ExecutionStatus AchieveConditionWithOverrideInstruction::ExecuteSingleImpl(UserI
     return HandleAction(ui, ws);
   }
   std::string main_text = MAIN_DIALOG_TEXT_DEFAULT;
-  if (HasAttribute(MAIN_DIALOG_TEXT_ATTRIBUTE) &&
-      !GetVariableAttributeAs(MAIN_DIALOG_TEXT_ATTRIBUTE, ws, ui, main_text))
+  if (!GetAttributeValueAs(MAIN_DIALOG_TEXT_ATTRIBUTE, ws, ui, main_text))
   {
     return ExecutionStatus::FAILURE;
   }
