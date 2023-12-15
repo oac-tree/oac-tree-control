@@ -13,6 +13,7 @@ target_sources(sequencer-control
   PRIVATE
     achieve_condition_instruction.cpp
     achieve_condition_with_override_instruction.cpp
+    achieve_condition_with_timeout_instruction.cpp
     context_override_instruction_wrapper.cpp
     execute_while_instruction.cpp
     non_owning_instruction_wrapper.cpp
