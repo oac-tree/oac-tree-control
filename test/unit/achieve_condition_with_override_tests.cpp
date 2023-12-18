@@ -151,7 +151,6 @@ TEST_F(AchieveConditionWithOverrideTest, Setup)
     ASSERT_TRUE(wait_2);
     ASSERT_TRUE(instr->InsertInstruction(std::move(wait_1), 0));
     ASSERT_TRUE(instr->InsertInstruction(std::move(wait_2), 1));
-    ASSERT_TRUE(instr);
     Procedure proc;
     EXPECT_NO_THROW(instr->Setup(proc));
   }

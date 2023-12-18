@@ -29,20 +29,81 @@
 
 using namespace sup::sequencer;
 
-class ExecuteWhileTest : public ::testing::Test
+class AchieveConditionWithTimeoutTest : public ::testing::Test
 {
 protected:
-  ExecuteWhileTest() = default;
-  virtual ~ExecuteWhileTest() = default;
+  AchieveConditionWithTimeoutTest() = default;
+  ~AchieveConditionWithTimeoutTest() = default;
 };
 
-TEST_F(ExecuteWhileTest, Success)
+TEST_F(AchieveConditionWithTimeoutTest, Setup)
+{
+  {
+    // No children
+    const std::string body{R"(
+      <AchieveConditionWithTimeout varNames="live" timeout="0.5"/>
+      <Workspace/>)"};
+
+    auto proc = ParseProcedureString(test::CreateProcedureString(body));
+    EXPECT_THROW(proc->Setup(), InstructionSetupException);
+  }
+  {
+    // One child
+    const std::string body{R"(
+      <AchieveConditionWithTimeout varNames="live" timeout="0.5">
+          <Wait timeout="1.0"/>
+      </AchieveConditionWithTimeout>
+      <Workspace>
+          <Local name="live" type='{"type":"uint64"}' value='0' />
+      </Workspace>)"};
+
+    auto proc = ParseProcedureString(test::CreateProcedureString(body));
+    EXPECT_THROW(proc->Setup(), InstructionSetupException);
+  }
+  {
+    // Three children
+    const std::string body{R"(
+      <AchieveConditionWithTimeout varNames="live" timeout="0.5">
+          <Wait timeout="1.0"/>
+          <Wait timeout="2.0"/>
+          <Wait timeout="3.0"/>
+      </AchieveConditionWithTimeout>
+      <Workspace>
+          <Local name="live" type='{"type":"uint64"}' value='0' />
+      </Workspace>)"};
+
+    auto proc = ParseProcedureString(test::CreateProcedureString(body));
+    EXPECT_THROW(proc->Setup(), InstructionSetupException);
+  }
+  {
+    // Missing mandatory attribute
+    auto instr = GlobalInstructionRegistry().Create("AchieveConditionWithTimeout");
+    auto wait_1 = GlobalInstructionRegistry().Create("Wait");
+    auto wait_2 = GlobalInstructionRegistry().Create("Wait");
+    ASSERT_TRUE(instr);
+    ASSERT_TRUE(wait_1);
+    ASSERT_TRUE(wait_2);
+    ASSERT_TRUE(instr->InsertInstruction(std::move(wait_1), 0));
+    ASSERT_TRUE(instr->InsertInstruction(std::move(wait_2), 1));
+    Procedure proc;
+    EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+    EXPECT_TRUE(instr->AddAttribute("varNames", "does_not_matter"));
+    EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+    // Attribute cannot be parsed as double:
+    EXPECT_TRUE(instr->AddAttribute("timeout", "five"));
+    EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
+    EXPECT_TRUE(instr->SetAttribute("timeout", "5.0"));
+    EXPECT_NO_THROW(instr->Setup(proc));
+  }
+}
+
+TEST_F(AchieveConditionWithTimeoutTest, DirectSuccess)
 {
   const std::string body{R"(
-    <ExecuteWhile varNames="live">
-        <Wait timeout="0.2"/>
+    <AchieveConditionWithTimeout varNames="live" timeout="1.0">
         <Equals leftVar="live" rightVar="zero"/>
-    </ExecuteWhile>
+        <Wait timeout="0.2"/>
+    </AchieveConditionWithTimeout>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
         <Local name="zero" type='{"type":"uint64"}' value='0' />
@@ -54,75 +115,35 @@ TEST_F(ExecuteWhileTest, Success)
   EXPECT_TRUE(test::TryAndExecute(proc, ui));
 }
 
-TEST_F(ExecuteWhileTest, Setup)
-{
-  {
-    // No children
-    const std::string body{R"(
-      <ExecuteWhile varNames="live"/>
-      <Workspace>
-          <Local name="live" type='{"type":"uint64"}' value='0' />
-      </Workspace>)"};
-
-    auto proc = ParseProcedureString(test::CreateProcedureString(body));
-    EXPECT_THROW(proc->Setup(), InstructionSetupException);
-  }
-  {
-    // One child
-    const std::string body{R"(
-      <ExecuteWhile varNames="live">
-          <Wait timeout="1.0"/>
-      </ExecuteWhile>
-      <Workspace>
-          <Local name="live" type='{"type":"uint64"}' value='0' />
-      </Workspace>)"};
-
-    auto proc = ParseProcedureString(test::CreateProcedureString(body));
-    EXPECT_THROW(proc->Setup(), InstructionSetupException);
-  }
-  {
-    // Three children
-    const std::string body{R"(
-      <ExecuteWhile varNames="live">
-          <Wait timeout="1.0"/>
-          <Wait timeout="2.0"/>
-          <Wait timeout="3.0"/>
-      </ExecuteWhile>
-      <Workspace>
-          <Local name="live" type='{"type":"uint64"}' value='0' />
-      </Workspace>)"};
-
-    auto proc = ParseProcedureString(test::CreateProcedureString(body));
-    EXPECT_THROW(proc->Setup(), InstructionSetupException);
-  }
-  {
-    // Missing mandatory attribute
-    auto instr = GlobalInstructionRegistry().Create("ExecuteWhile");
-    auto wait_1 = GlobalInstructionRegistry().Create("Wait");
-    auto wait_2 = GlobalInstructionRegistry().Create("Wait");
-    ASSERT_TRUE(instr);
-    ASSERT_TRUE(wait_1);
-    ASSERT_TRUE(wait_2);
-    ASSERT_TRUE(instr->InsertInstruction(std::move(wait_1), 0));
-    ASSERT_TRUE(instr->InsertInstruction(std::move(wait_2), 1));
-    Procedure proc;
-    EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
-    EXPECT_TRUE(instr->AddAttribute("varNames", "does_not_matter"));
-    EXPECT_NO_THROW(instr->Setup(proc));
-  }
-}
-
-TEST_F(ExecuteWhileTest, Failure)
+TEST_F(AchieveConditionWithTimeoutTest, SuccessImmediatelyAfterAction)
 {
   const std::string body{R"(
-    <ParallelSequence successThreshold="1">
-        <ExecuteWhile varNames="live">
-            <Wait timeout="1.0"/>
-            <Equals leftVar="live" rightVar="zero"/>
-        </ExecuteWhile>
+    <AchieveConditionWithTimeout varNames="live" timeout="1.0">
+        <Equals leftVar="live" rightVar="one"/>
+        <Copy inputVar="one" outputVar="live"/>
+    </AchieveConditionWithTimeout>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::NullUserInterface ui;
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui));
+}
+
+TEST_F(AchieveConditionWithTimeoutTest, SuccessWithinTimeout)
+{
+  const std::string body{R"(
+    <ParallelSequence failureThreshold="2">
+        <AchieveConditionWithTimeout varNames="live" timeout="2.0">
+            <Equals leftVar="live" rightVar="one"/>
+            <Wait/>
+        </AchieveConditionWithTimeout>
         <Inverter>
             <Sequence>
-                <Wait timeout="0.1"/>
+                <Wait timeout="0.3"/>
                 <Copy inputVar="one" outputVar="live"/>
             </Sequence>
         </Inverter>
@@ -130,6 +151,24 @@ TEST_F(ExecuteWhileTest, Failure)
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
         <Local name="zero" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::NullUserInterface ui;
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui));
+}
+
+TEST_F(AchieveConditionWithTimeoutTest, FailAfterTimeout)
+{
+  const std::string body{R"(
+    <AchieveConditionWithTimeout varNames="live" timeout="0.5">
+        <Equals leftVar="live" rightVar="one"/>
+        <Wait timeout="0.1"/>
+    </AchieveConditionWithTimeout>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
         <Local name="one" type='{"type":"uint64"}' value='1' />
     </Workspace>
 )"};
