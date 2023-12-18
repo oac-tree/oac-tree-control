@@ -24,7 +24,7 @@
 #include "wrapped_user_interface.h"
 
 #include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/instruction_utils.h>
+#include <sup/sequencer/procedure_context.h>
 
 namespace sup {
 
@@ -108,7 +108,10 @@ std::unique_ptr<Instruction> AchieveConditionWithTimeoutInstruction::CreateWrapp
   force_success->InsertInstruction(std::move(action_wrapper), 0);
 
   // Wait for condition with another wrapped condition
-  auto cond_wrapper_2 = m_instr_manager.CreateInstructionWrapper(*children[0]);
+  // To avoid issues with aliasing of the condition (which would break the tree structure, as it
+  // implies two different branches having an identical subinstruction), the condition tree
+  // is cloned here.
+  auto cond_wrapper_2 = CloneInstructionTree(*children[0]);
   auto wait_with_timeout = GlobalInstructionRegistry().Create("WaitForCondition");
   wait_with_timeout->AddAttribute(VARNAMES_ATTRIBUTE_NAME,
                                   GetAttributeString(VARNAMES_ATTRIBUTE_NAME));

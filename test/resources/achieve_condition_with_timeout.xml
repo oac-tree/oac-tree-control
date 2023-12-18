@@ -6,13 +6,13 @@
     <Plugin>libsequencer-control.so</Plugin>
     <Sequence>
         <ParallelSequence successThreshold="1" failureThreshold="2">
-            <AchieveConditionWithTimeout varNames="live" timeout="4.0">
+            <AchieveConditionWithTimeout varNames="live" timeout="3.0">
                 <Equals leftVar="live" rightVar="one"/>
                 <Wait/>
             </AchieveConditionWithTimeout>
             <Inverter>
                 <Sequence>
-                    <Wait timeout="2"/>
+                    <Wait timeout="1"/>
                     <Copy inputVar="one" outputVar="live"/>
                 </Sequence>
             </Inverter>
