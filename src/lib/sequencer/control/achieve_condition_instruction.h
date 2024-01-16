@@ -54,7 +54,7 @@ private:
   bool m_action_done;
   void SetupImpl(const Procedure& proc) override;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
-  void ResetHook() override;
+  void ResetHook(UserInterface& ui) override;
   std::vector<const Instruction*> NextInstructionsImpl() const override;
 
   void HandleAction(UserInterface& ui, Workspace& ws);

@@ -56,7 +56,7 @@ private:
   void SetupImpl(const Procedure& proc) override;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
   void HaltImpl() override;
-  void ResetHook() override;
+  void ResetHook(UserInterface& ui) override;
   std::vector<const Instruction*> NextInstructionsImpl() const override;
   std::unique_ptr<Instruction> CreateWrappedInstructionTree();
 

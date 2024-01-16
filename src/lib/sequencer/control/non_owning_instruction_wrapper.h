@@ -52,7 +52,7 @@ private:
   void SetupImpl(const Procedure& proc) override;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
   void HaltImpl() override;
-  void ResetHook() override;
+  void ResetHook(UserInterface& ui) override;
   int ChildrenCountImpl() const override;
   std::vector<const Instruction*> ChildInstructionsImpl() const override;
   std::vector<const Instruction*> NextInstructionsImpl() const override;

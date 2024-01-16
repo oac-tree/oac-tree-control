@@ -75,11 +75,11 @@ void WaitForConditionInstruction::HaltImpl()
   }
 }
 
-void WaitForConditionInstruction::ResetHook()
+void WaitForConditionInstruction::ResetHook(UserInterface& ui)
 {
   if (m_internal_instruction_tree)
   {
-    m_internal_instruction_tree->Reset();
+    m_internal_instruction_tree->Reset(ui);
   }
 }
 

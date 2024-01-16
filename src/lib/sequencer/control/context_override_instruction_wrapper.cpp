@@ -48,6 +48,13 @@ ExecutionStatus ContextOVerrideInstructionWrapper::ExecuteSingleImpl(
   return GetInstruction()->GetStatus();
 }
 
+void ContextOVerrideInstructionWrapper::ResetHook(UserInterface& ui)
+{
+  auto selected_ui = m_ui == nullptr ? std::addressof(ui)
+                                     : m_ui;
+  GetInstruction()->Reset(*selected_ui);
+}
+
 } // namespace sequencer
 
 } // namespace sup

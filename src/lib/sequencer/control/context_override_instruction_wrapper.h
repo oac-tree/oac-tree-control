@@ -45,6 +45,7 @@ public:
 private:
   UserInterface* m_ui;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
+  void ResetHook(UserInterface& ui) override;
 };
 
 }  // namespace sequencer

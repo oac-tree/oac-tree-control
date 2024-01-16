@@ -87,7 +87,7 @@ ExecutionStatus AchieveConditionWithOverrideInstruction::ExecuteSingleImpl(UserI
   switch (GetUserInput(main_text, ui))
   {
   case kRetry:
-    ResetHook();
+    ResetHook(ui);
     return ExecutionStatus::NOT_FINISHED;
   case kOverride:
     return ExecutionStatus::SUCCESS;
@@ -97,9 +97,9 @@ ExecutionStatus AchieveConditionWithOverrideInstruction::ExecuteSingleImpl(UserI
   return ExecutionStatus::FAILURE;
 }
 
-void AchieveConditionWithOverrideInstruction::ResetHook()
+void AchieveConditionWithOverrideInstruction::ResetHook(UserInterface& ui)
 {
-  ResetChildren();
+  ResetChildren(ui);
   m_user_decision_needed = false;
 }
 
@@ -147,7 +147,7 @@ ExecutionStatus AchieveConditionWithOverrideInstruction::HandleAction(UserInterf
   action_status = action->GetStatus();
   if (IsFinishedStatus(action_status))
   {
-    ResetChildren();
+    ResetChildren(ui);
     m_user_decision_needed = true;
   }
   return CalculateCompoundStatus();

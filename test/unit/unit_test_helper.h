@@ -68,7 +68,7 @@ static inline bool TryAndExecute(std::unique_ptr<Procedure>& proc,
   bool status = TryAndExecuteNoReset(proc, ui, expect);
   if (proc)
   {
-    proc->Reset();
+    proc->Reset(ui);
   }
   return status;
 }

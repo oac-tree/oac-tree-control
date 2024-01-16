@@ -70,9 +70,9 @@ ExecutionStatus AchieveConditionInstruction::ExecuteSingleImpl(UserInterface& ui
   return CalculateCompoundStatus();
 }
 
-void AchieveConditionInstruction::ResetHook()
+void AchieveConditionInstruction::ResetHook(UserInterface& ui)
 {
-  ResetChildren();
+  ResetChildren(ui);
   m_action_done = false;
 }
 
@@ -110,7 +110,7 @@ void AchieveConditionInstruction::HandleAction(UserInterface& ui, Workspace& ws)
   action_status = action->GetStatus();
   if (IsFinishedStatus(action_status))
   {
-    ResetChildren();
+    ResetChildren(ui);
     m_action_done = true;
   }
 }

@@ -75,11 +75,11 @@ void AchieveConditionWithTimeoutInstruction::HaltImpl()
   }
 }
 
-void AchieveConditionWithTimeoutInstruction::ResetHook()
+void AchieveConditionWithTimeoutInstruction::ResetHook(UserInterface& ui)
 {
   if (m_internal_instruction_tree)
   {
-    m_internal_instruction_tree->Reset();
+    m_internal_instruction_tree->Reset(ui);
   }
 }
 

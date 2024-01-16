@@ -71,9 +71,9 @@ void NonOwningInstructionWrapper::HaltImpl()
   m_instr->Halt();
 }
 
-void NonOwningInstructionWrapper::ResetHook()
+void NonOwningInstructionWrapper::ResetHook(UserInterface& ui)
 {
-  m_instr->Reset();
+  m_instr->Reset(ui);
 }
 
 int NonOwningInstructionWrapper::ChildrenCountImpl() const
