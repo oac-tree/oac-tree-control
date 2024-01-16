@@ -48,8 +48,6 @@ public:
 
   std::unique_ptr<Instruction> CreateInstructionWrapper(Instruction& instr);
 
-  void SetContext(UserInterface& ui);
-
   UserInterface& GetWrappedUI(UserInterface& ui, const std::string& prefix);
   Workspace& GetLocalWorkspace();
 
@@ -59,6 +57,8 @@ private:
   std::vector<std::unique_ptr<ContextOVerrideInstructionWrapper>> m_wrapped_instructions;
   std::unique_ptr<UserInterface> m_wrapped_ui;
   std::unique_ptr<Workspace> m_local_workspace;
+
+  void SetContext(UserInterface& ui);
 };
 
 std::vector<const Instruction*> FilterNextInstructions(const Instruction& instr,

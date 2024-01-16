@@ -57,16 +57,9 @@ std::unique_ptr<Instruction> WrappedInstructionManager::CreateInstructionWrapper
   return result;
 }
 
-void WrappedInstructionManager::SetContext(UserInterface& ui)
-{
-  for (auto& instr : m_wrapped_instructions)
-  {
-    instr->SetUserInterface(ui);
-  }
-}
-
 UserInterface& WrappedInstructionManager::GetWrappedUI(UserInterface& ui, const std::string& prefix)
 {
+  SetContext(ui);
   if (!m_wrapped_ui)
   {
     m_wrapped_ui.reset(new WrappedUserInterface(ui, prefix));
@@ -104,6 +97,14 @@ std::vector<const Instruction*> FilterNextInstructions(const Instruction& instr,
     return Intersection(next_instr, children);
   }
   return {};
+}
+
+void WrappedInstructionManager::SetContext(UserInterface& ui)
+{
+  for (auto& instr : m_wrapped_instructions)
+  {
+    instr->SetUserInterface(ui);
+  }
 }
 
 } // namespace sequencer

@@ -61,7 +61,6 @@ void AchieveConditionWithTimeoutInstruction::SetupImpl(const Procedure& proc)
 
 ExecutionStatus AchieveConditionWithTimeoutInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  m_instr_manager.SetContext(ui);
   auto& wrapped_ui = m_instr_manager.GetWrappedUI(ui, LOG_MESSAGE_PREFIX);
   m_internal_instruction_tree->ExecuteSingle(wrapped_ui, ws);
   return m_internal_instruction_tree->GetStatus();
@@ -79,7 +78,8 @@ void AchieveConditionWithTimeoutInstruction::ResetHook(UserInterface& ui)
 {
   if (m_internal_instruction_tree)
   {
-    m_internal_instruction_tree->Reset(ui);
+    auto& wrapped_ui = m_instr_manager.GetWrappedUI(ui, LOG_MESSAGE_PREFIX);
+    m_internal_instruction_tree->Reset(wrapped_ui);
   }
 }
 
