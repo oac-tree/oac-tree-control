@@ -170,7 +170,7 @@ AchieveConditionWithOverrideInstruction::GetUserInput(const std::string& dialog_
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "user choice [" + std::to_string(choice) + "] is invalid. Valid values are 0, 1 or 2.";
-    ui.LogWarning(warning_message);
+    LogWarning(ui, warning_message);
     return kFail;
   }
   return decision_map[choice];
