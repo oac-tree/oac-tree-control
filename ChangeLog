@@ -1,3 +1,8 @@
+Changes for 1.1.0:
+
+- Add instruction AchieveConditionWithTimeoutInstruction
+- Update cmake configuration
+
 Changes for 1.0.0:
 
 - Initial version providing instructions: AchieveCondition, AchieveConditionWithOverride, ExecuteWhile and WaitForCondition
