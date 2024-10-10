@@ -1,7 +1,5 @@
 add_library(sequencer-control SHARED)
 
-target_compile_features(sequencer-control PRIVATE cxx_std_11)
-
 set_target_properties(sequencer-control PROPERTIES
   EXPORT_NAME sequencer-control
   SOVERSION ${SUP_SEQUENCER_PLUGIN_CONTROL_SOVERSION}
