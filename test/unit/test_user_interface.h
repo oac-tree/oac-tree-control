@@ -22,6 +22,7 @@
 #ifndef SUP_SEQUENCER_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_
 #define SUP_SEQUENCER_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_
 
+#include <sup/sequencer/async_input_adapter.h>
 #include <sup/sequencer/user_interface.h>
 
 #include <utility>
@@ -43,11 +44,15 @@ public:
 
   void SetUserChoices(const std::vector<int>& user_choices);
 
-  int GetUserChoice(const std::vector<std::string>& options,
-                        const sup::dto::AnyValue& metadata) override;
+  std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request) override;
 
   std::string m_main_text;
 private:
+  UserInputReply UserInput(const UserInputRequest& request, sup::dto::uint64 id);
+  void Interrupt(sup::dto::uint64 id);
+  int GetUserChoice(const std::vector<std::string>& options,
+                    const sup::dto::AnyValue& metadata);
+  AsyncInputAdapter m_input_adapter;
   std::vector<int> m_user_choices;
   std::size_t m_current_index;
 };
