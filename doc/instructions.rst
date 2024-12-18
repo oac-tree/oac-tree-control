@@ -167,7 +167,7 @@ The ``ExecuteWhile`` instruction is a compound instruction with exactly two chil
 
 **Example**
 
-This procedure will check continuously check if the ``live`` variable is zero and will exit with ``FAILURE`` status as soon as this is not the case. At the same time, while the condition is still true, it will execute its first child, which is a simple wait instruction. Since the wait instruction will succeed after one second and the condition will remain true, this procedure will finish with a ``SUCCESS`` status after one second.
+This procedure will continuously check if the ``live`` variable is zero and will exit with ``FAILURE`` status as soon as this is not the case. At the same time, while the condition is still true, it will execute its first child, which is a simple wait instruction. Since the wait instruction will succeed after one second and the condition will remain true, this procedure will finish with a ``SUCCESS`` status after one second.
 
 .. code-block:: xml
 
