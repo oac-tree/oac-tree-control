@@ -1,14 +1,12 @@
 Welcome to sequencer-plugin-control's documentation!
-==================================================
+====================================================
 
-This is a work in progress.
+``sequencer-plugin-control`` is a sequencer plugin that provides common compound instructions in control system logic.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
+   overview
+   usage
+   instructions
