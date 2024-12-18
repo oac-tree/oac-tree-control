@@ -106,7 +106,7 @@ Its behavior is again similar to the ``AchieveCondition`` instruction, except th
    * - varNames
      - StringType
      - yes
-     - Comma separated list of variable names to monitor during the timeout
+     - Comma-separated list of variable names to monitor during the timeout
    * - timeout
      - Float64Type
      - yes
@@ -115,6 +115,10 @@ Its behavior is again similar to the ``AchieveCondition`` instruction, except th
 .. note::
 
    The list of variable names to monitor is required for the instruction to know when to re-evaluate the condition during the timeout period. On every listed variable change, it will evaluate this condition.
+
+.. warning::
+
+   The comma-separated list of variable names should not contain whitespace after the comma!
 
 .. _achieve_cond_timeout_example:
 
@@ -128,6 +132,95 @@ This procedure will check if the ``live`` variable is equal to one. Since this i
         <Equals leftVar="live" rightVar="one"/>
         <Wait timeout="1"/>
     </AchieveConditionWithTimeout>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+
+ExecuteWhile
+^^^^^^^^^^^^
+
+The ``ExecuteWhile`` instruction is a compound instruction with exactly two child instructions (or instruction trees). The first child is the instruction tree to execute, while the second child denotes a condition that must be satisfied during the first child's execution. As soon as this condition fails, i.e. returns ``FAILURE``, the execution of the first child is interrupted and the parent ``ExecuteWhile`` instruction will return ``FAILURE``. Only when the first child was successfully executed, while satisfying the condition all the time, will the parent instruction return ``SUCCESS``.
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - varNames
+     - StringType
+     - yes
+     - Comma separated list of variable names to monitor during the execution
+
+.. note::
+
+   The list of variable names to monitor is required for the instruction to know when to re-evaluate the condition during execution of the first child instruction tree. On every listed variable change, it will evaluate this condition.
+
+.. warning::
+
+   The comma-separated list of variable names should not contain whitespace after the comma!
+
+.. _execute_while_example:
+
+**Example**
+
+This procedure will check continuously check if the ``live`` variable is zero and will exit with ``FAILURE`` status as soon as this is not the case. At the same time, while the condition is still true, it will execute its first child, which is a simple wait instruction. Since the wait instruction will succeed after one second and the condition will remain true, this procedure will finish with a ``SUCCESS`` status after one second.
+
+.. code-block:: xml
+
+    <ExecuteWhile varNames="live">
+        <Wait timeout="1.0"/>
+        <Equals leftVar="live" rightVar="zero"/>
+    </ExecuteWhile>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="zero" type='{"type":"uint64"}' value='0' />
+    </Workspace>
+
+WaitForCondition
+^^^^^^^^^^^^^^^^
+
+The ``WaitForCondition`` instruction is a compound instruction with exactly one child instruction (or instruction tree). The child denotes the condition to wait for, where the ``SUCCESS`` status of the child means that the condition is satisfied and ``FAILURE`` that it is not.
+
+.. list-table::
+   :widths: 25 25 15 50
+   :header-rows: 1
+
+   * - Attribute name
+     - Attribute type
+     - Mandatory
+     - Description
+   * - varNames
+     - StringType
+     - yes
+     - Comma-separated list of variable names to monitor for changes
+   * - timeout
+     - Float64Type
+     - yes
+     - Timeout in seconds
+
+.. note::
+
+   The list of variable names to monitor is required for the instruction to know when to re-evaluate the condition during the timeout period. On every listed variable change, it will evaluate this condition.
+
+.. warning::
+
+   The comma-separated list of variable names should not contain whitespace after the comma!
+
+.. _wait_for_condition_example:
+
+**Example**
+
+This procedure will monitor the ``live`` variable and wait with a timeout of two seconds for it to become one. Since the ``live`` variable never changes and does not fulfill the condition, this procedure will exit with a ``FAILURE`` status after two seconds.
+
+.. code-block:: xml
+
+    <WaitForCondition varNames="live" timeout="2.0">
+        <Equals leftVar="live" rightVar="one"/>
+    </WaitForCondition>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
         <Local name="one" type='{"type":"uint64"}' value='1' />

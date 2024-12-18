@@ -10,11 +10,11 @@ This plugin provides compound instructions that handle typical scenarios in cont
    * - Instruction
      - Description
    * - AchieveCondition
-     - Try to achieve a given condition with an optional action
+     - Try to achieve a given condition with an action
    * - AchieveConditionWithOverride
      - Try to achieve a given condition with an optional action and user provided override
    * - AchieveConditionWithTimeout
-     - Try to achieve a given condition with an optional action and timeout
+     - Try to achieve a given condition with an action and timeout
    * - ExecuteWhile
      - Execute a child instruction while a given condition holds
    * - WaitForCondition
