@@ -165,15 +165,14 @@ AchieveConditionWithOverrideInstruction::GetUserInput(const std::string& dialog_
   metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
                      {sup::dto::UnsignedInteger32Type, dialog_type::kSelection});
   auto options = GetUserChoices();
-  auto input_reply = GetInterruptableUserChoice(ui, *this, options, metadata);
-  if (!input_reply.first)
+  auto [retrieved, choice] = GetInterruptableUserChoice(ui, *this, options, metadata);
+  if (!retrieved)
   {
     std::string warning_message = InstructionWarningProlog(*this) +
       "did not receive valid choice";
     LogWarning(ui, warning_message);
     return kFail;
   }
-  int choice = input_reply.second;
   if (choice < 0 || choice >= 3)
   {
     std::string warning_message = InstructionWarningProlog(*this) +
