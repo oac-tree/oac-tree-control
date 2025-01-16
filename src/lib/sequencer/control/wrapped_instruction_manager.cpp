@@ -51,9 +51,9 @@ WrappedInstructionManager::~WrappedInstructionManager() = default;
 
 std::unique_ptr<Instruction> WrappedInstructionManager::CreateInstructionWrapper(Instruction& instr)
 {
-  m_wrapped_instructions.emplace_back(new ContextOVerrideInstructionWrapper(std::addressof(instr)));
+  m_wrapped_instructions.emplace_back(std::make_unique<ContextOVerrideInstructionWrapper>(std::addressof(instr)));
   auto wrapper = m_wrapped_instructions.back().get();
-  std::unique_ptr<Instruction> result{new NonOwningInstructionWrapper(wrapper)};
+  auto result = std::make_unique<NonOwningInstructionWrapper>(wrapper);
   return result;
 }
 
@@ -62,7 +62,7 @@ UserInterface& WrappedInstructionManager::GetWrappedUI(UserInterface& ui, const 
   SetContext(ui);
   if (!m_wrapped_ui)
   {
-    m_wrapped_ui.reset(new WrappedUserInterface(ui, prefix));
+    m_wrapped_ui = std::make_unique<WrappedUserInterface>(ui, prefix);
   }
   return *m_wrapped_ui;
 }
@@ -71,7 +71,7 @@ Workspace& WrappedInstructionManager::GetLocalWorkspace()
 {
   if (!m_local_workspace)
   {
-    m_local_workspace.reset(new Workspace{});
+    m_local_workspace = std::make_unique<Workspace>();
   }
   return *m_local_workspace;
 }
