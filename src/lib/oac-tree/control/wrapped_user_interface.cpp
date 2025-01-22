@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -23,7 +23,7 @@
 
 namespace sup {
 
-namespace sequencer {
+namespace oac_tree {
 
 WrappedUserInterface::WrappedUserInterface(UserInterface& ui, const std::string& prefix)
   : m_ui{ui}
@@ -38,6 +38,6 @@ void WrappedUserInterface::Log(int severity, const std::string& message)
   m_ui.Log(severity, wrapped_message);
 }
 
-} // namespace sequencer
+} // namespace oac_tree
 
 } // namespace sup

@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -24,22 +24,22 @@
 #include "context_override_instruction_wrapper.h"
 #include "wrapped_user_interface.h"
 
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/instruction_tree.h>
-#include <sup/sequencer/workspace.h>
+#include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/instruction_tree.h>
+#include <sup/oac-tree/workspace.h>
 
 #include <algorithm>
 
 namespace
 {
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 std::vector<const Instruction*> Intersection(const std::vector<const Instruction*>& left_set,
                                              const std::vector<const Instruction*>& right_set);
 }  // unnamed namespace
 
 namespace sup {
 
-namespace sequencer {
+namespace oac_tree {
 
 WrappedInstructionManager::WrappedInstructionManager()
   : m_wrapped_instructions{}
@@ -107,13 +107,13 @@ void WrappedInstructionManager::SetContext(UserInterface& ui)
   }
 }
 
-} // namespace sequencer
+} // namespace oac_tree
 
 } // namespace sup
 
 namespace
 {
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 std::vector<const Instruction*> Intersection(const std::vector<const Instruction*>& left_set,
                                              const std::vector<const Instruction*>& right_set)
 {

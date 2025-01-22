@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -23,7 +23,7 @@
 
 namespace sup {
 
-namespace sequencer {
+namespace oac_tree {
 
 namespace test {
 
@@ -31,10 +31,10 @@ std::string CreateProcedureString(const std::string &body)
 {
   static const std::string header{
       R"RAW(<?xml version="1.0" encoding="UTF-8"?>
-<Procedure xmlns="http://codac.iter.org/sup/sequencer" version="1.0"
+<Procedure xmlns="http://codac.iter.org/sup/oac-tree" version="1.0"
            name="Procedure for unit testing"
            xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-           xs:schemaLocation="http://codac.iter.org/sup/sequencer sequencer.xsd">)RAW"};
+           xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">)RAW"};
 
   static const std::string footer{R"RAW(</Procedure>)RAW"};
 
@@ -43,6 +43,6 @@ std::string CreateProcedureString(const std::string &body)
 
 } // namespace test
 
-} // namespace sequencer
+} // namespace oac_tree
 
 } // namespace sup

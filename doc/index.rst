@@ -1,7 +1,7 @@
-Welcome to sequencer-plugin-control's documentation!
+Welcome to oac-tree-plugin-control's documentation!
 ====================================================
 
-``sequencer-plugin-control`` is a sequencer plugin that provides common compound instructions in control system logic.
+``oac-tree-plugin-control`` is a oac-tree plugin that provides common compound instructions in control system logic.
 
 .. toctree::
    :maxdepth: 2

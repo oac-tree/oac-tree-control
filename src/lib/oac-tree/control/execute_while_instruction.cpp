@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -23,12 +23,12 @@
 
 #include "wrapped_user_interface.h"
 
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/instruction_utils.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/instruction_utils.h>
 
 namespace sup {
 
-namespace sequencer {
+namespace oac_tree {
 
 const std::string ExecuteWhileInstruction::Type = "ExecuteWhile";
 static bool _execute_while_initialised_flag = RegisterGlobalInstruction<ExecuteWhileInstruction>();
@@ -115,6 +115,6 @@ std::unique_ptr<Instruction> ExecuteWhileInstruction::CreateWrappedInstructionTr
   return parallel;
 }
 
-} // namespace sequencer
+} // namespace oac_tree
 
 } // namespace sup

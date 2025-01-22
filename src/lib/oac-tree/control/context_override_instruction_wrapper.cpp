@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -23,7 +23,7 @@
 
 namespace sup {
 
-namespace sequencer {
+namespace oac_tree {
 
 const std::string ContextOVerrideInstructionWrapper::Type = "ContextOVerrideInstructionWrapper";
 
@@ -55,6 +55,6 @@ void ContextOVerrideInstructionWrapper::ResetHook(UserInterface& ui)
   GetInstruction()->Reset(*selected_ui);
 }
 
-} // namespace sequencer
+} // namespace oac_tree
 
 } // namespace sup

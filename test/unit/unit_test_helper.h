@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -19,12 +19,12 @@
 * of the distribution package.
 ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_UNIT_TEST_HELPER_H_
-#define SUP_SEQUENCER_PLUGIN_CONTROL_UNIT_TEST_HELPER_H_
+#ifndef SUP_OAC_TREE_PLUGIN_CONTROL_UNIT_TEST_HELPER_H_
+#define SUP_OAC_TREE_PLUGIN_CONTROL_UNIT_TEST_HELPER_H_
 
-#include <sup/sequencer/instruction.h>
-#include <sup/sequencer/procedure.h>
-#include <sup/sequencer/user_interface.h>
+#include <sup/oac-tree/instruction.h>
+#include <sup/oac-tree/procedure.h>
+#include <sup/oac-tree/user_interface.h>
 
 #include <thread>
 #include <utility>
@@ -32,7 +32,7 @@
 
 namespace sup {
 
-namespace sequencer {
+namespace oac_tree {
 
 namespace test {
 
@@ -74,15 +74,15 @@ static inline bool TryAndExecute(std::unique_ptr<Procedure>& proc,
 }
 
 /**
- * Creates a string representing a valid XML of sequencer procedure by enclosing user provided body
+ * Creates a string representing a valid XML of oac-tree procedure by enclosing user provided body
  * between appropriate header and footer.
  */
 std::string CreateProcedureString(const std::string& body);
 
 } // namespace test
 
-} // namespace sequencer
+} // namespace oac_tree
 
 } // namespace sup
 
-#endif // SUP_SEQUENCER_PLUGIN_CONTROL_UNIT_TEST_HELPER_H_
+#endif // SUP_OAC_TREE_PLUGIN_CONTROL_UNIT_TEST_HELPER_H_

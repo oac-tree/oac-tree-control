@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -23,12 +23,12 @@
 
 #include "wrapped_user_interface.h"
 
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/procedure_context.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/procedure_context.h>
 
 namespace sup {
 
-namespace sequencer {
+namespace oac_tree {
 
 const std::string AchieveConditionWithTimeoutInstruction::Type = "AchieveConditionWithTimeout";
 static bool _wait_for_condition_initialised_flag =
@@ -131,6 +131,6 @@ std::unique_ptr<Instruction> AchieveConditionWithTimeoutInstruction::CreateWrapp
   return fallback;
 }
 
-} // namespace sequencer
+} // namespace oac_tree
 
 } // namespace sup

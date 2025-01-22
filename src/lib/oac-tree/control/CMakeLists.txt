@@ -1,13 +1,13 @@
-add_library(sequencer-control SHARED)
+add_library(oac-tree-control SHARED)
 
-set_target_properties(sequencer-control PROPERTIES
-  EXPORT_NAME sequencer-control
+set_target_properties(oac-tree-control PROPERTIES
+  EXPORT_NAME oac-tree-control
   SOVERSION ${LIBSOVERSION}
   VERSION ${LIBVERSION}
   LIBRARY_OUTPUT_DIRECTORY ${PLUGIN_RUNTIME_DIRECTORY}
 )
 
-target_sources(sequencer-control
+target_sources(oac-tree-control
   PRIVATE
     achieve_condition_instruction.cpp
     achieve_condition_with_override_instruction.cpp
@@ -20,11 +20,11 @@ target_sources(sequencer-control
     wrapped_user_interface.cpp
 )
 
-target_include_directories(sequencer-control PUBLIC
+target_include_directories(oac-tree-control PUBLIC
   $<INSTALL_INTERFACE:include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/../..>
 )
 
-target_link_libraries(sequencer-control PUBLIC sequencer::sequencer)
+target_link_libraries(oac-tree-control PUBLIC oac-tree::oac-tree)
 
-install(TARGETS sequencer-control DESTINATION ${PLUGIN_PATH})
+install(TARGETS oac-tree-control DESTINATION ${PLUGIN_PATH})

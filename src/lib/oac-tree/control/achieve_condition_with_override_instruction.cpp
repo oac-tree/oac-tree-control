@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -21,14 +21,14 @@
 
 #include "achieve_condition_with_override_instruction.h"
 
-#include <sup/sequencer/constants.h>
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/instruction_utils.h>
-#include <sup/sequencer/user_interface.h>
+#include <sup/oac-tree/constants.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/instruction_utils.h>
+#include <sup/oac-tree/user_interface.h>
 
 namespace sup {
 
-namespace sequencer {
+namespace oac_tree {
 
 const std::string AchieveConditionWithOverrideInstruction::Type = "AchieveConditionWithOverride";
 static bool _achieve_condition_with_override_initialised_flag =
@@ -209,6 +209,6 @@ ExecutionStatus AchieveConditionWithOverrideInstruction::CalculateCompoundStatus
   return ExecutionStatus::NOT_FINISHED;
 }
 
-} // namespace sequencer
+} // namespace oac_tree
 
 } // namespace sup

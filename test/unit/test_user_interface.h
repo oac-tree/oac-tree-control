@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -19,18 +19,18 @@
 * of the distribution package.
 ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_
-#define SUP_SEQUENCER_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_
+#ifndef SUP_OAC_TREE_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_
+#define SUP_OAC_TREE_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_
 
-#include <sup/sequencer/async_input_adapter.h>
-#include <sup/sequencer/user_interface.h>
+#include <sup/oac-tree/async_input_adapter.h>
+#include <sup/oac-tree/user_interface.h>
 
 #include <utility>
 #include <vector>
 
 namespace sup {
 
-namespace sequencer {
+namespace oac_tree {
 
 namespace test {
 
@@ -59,8 +59,8 @@ private:
 
 } // namespace test
 
-} // namespace sequencer
+} // namespace oac_tree
 
 } // namespace sup
 
-#endif // SUP_SEQUENCER_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_
+#endif // SUP_OAC_TREE_PLUGIN_CONTROL_TEST_USER_INTERFACE_H_

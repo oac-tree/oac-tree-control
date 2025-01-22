@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -19,14 +19,14 @@
 * of the distribution package.
 ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_NON_OWNING_INSTRUCTION_WRAPPER_H_
-#define SUP_SEQUENCER_PLUGIN_CONTROL_NON_OWNING_INSTRUCTION_WRAPPER_H_
+#ifndef SUP_OAC_TREE_PLUGIN_CONTROL_NON_OWNING_INSTRUCTION_WRAPPER_H_
+#define SUP_OAC_TREE_PLUGIN_CONTROL_NON_OWNING_INSTRUCTION_WRAPPER_H_
 
-#include <sup/sequencer/instruction.h>
+#include <sup/oac-tree/instruction.h>
 
 namespace sup
 {
-namespace sequencer
+namespace oac_tree
 {
 
 /**
@@ -60,8 +60,8 @@ private:
   std::unique_ptr<Instruction> TakeInstructionImpl(int index) override;
 };
 
-}  // namespace sequencer
+}  // namespace oac_tree
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_PLUGIN_CONTROL_NON_OWNING_INSTRUCTION_WRAPPER_H_
+#endif  // SUP_OAC_TREE_PLUGIN_CONTROL_NON_OWNING_INSTRUCTION_WRAPPER_H_

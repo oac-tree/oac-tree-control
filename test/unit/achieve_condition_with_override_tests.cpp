@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -22,12 +22,12 @@
 #include "test_user_interface.h"
 #include "unit_test_helper.h"
 
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/sequence_parser.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/sequence_parser.h>
 
 #include <gtest/gtest.h>
 
-using namespace sup::sequencer;
+using namespace sup::oac_tree;
 
 class AchieveConditionWithOverrideTest : public ::testing::Test
 {

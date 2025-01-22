@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -23,7 +23,7 @@
 
 namespace sup {
 
-namespace sequencer {
+namespace oac_tree {
 
 const std::string NonOwningInstructionWrapper::Type = "NonOwningInstructionWrapper";
 
@@ -102,6 +102,6 @@ std::unique_ptr<Instruction> NonOwningInstructionWrapper::TakeInstructionImpl(in
   return m_instr->TakeInstruction(index);
 }
 
-} // namespace sequencer
+} // namespace oac_tree
 
 } // namespace sup

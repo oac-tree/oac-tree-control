@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -19,14 +19,14 @@
 * of the distribution package.
 ******************************************************************************/
 
-#ifndef SUP_SEQUENCER_PLUGIN_CONTROL_CONTEXT_OVERRIDE_INSTRUCTION_WRAPPER_H_
-#define SUP_SEQUENCER_PLUGIN_CONTROL_CONTEXT_OVERRIDE_INSTRUCTION_WRAPPER_H_
+#ifndef SUP_OAC_TREE_PLUGIN_CONTROL_CONTEXT_OVERRIDE_INSTRUCTION_WRAPPER_H_
+#define SUP_OAC_TREE_PLUGIN_CONTROL_CONTEXT_OVERRIDE_INSTRUCTION_WRAPPER_H_
 
 #include "non_owning_instruction_wrapper.h"
 
 namespace sup
 {
-namespace sequencer
+namespace oac_tree
 {
 
 /**
@@ -48,8 +48,8 @@ private:
   void ResetHook(UserInterface& ui) override;
 };
 
-}  // namespace sequencer
+}  // namespace oac_tree
 
 }  // namespace sup
 
-#endif  // SUP_SEQUENCER_PLUGIN_CONTROL_CONTEXT_OVERRIDE_INSTRUCTION_WRAPPER_H_
+#endif  // SUP_OAC_TREE_PLUGIN_CONTROL_CONTEXT_OVERRIDE_INSTRUCTION_WRAPPER_H_

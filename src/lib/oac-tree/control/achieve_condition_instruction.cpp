@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -21,13 +21,13 @@
 
 #include "achieve_condition_instruction.h"
 
-#include <sup/sequencer/instruction_registry.h>
-#include <sup/sequencer/instruction_utils.h>
-#include <sup/sequencer/user_interface.h>
+#include <sup/oac-tree/instruction_registry.h>
+#include <sup/oac-tree/instruction_utils.h>
+#include <sup/oac-tree/user_interface.h>
 
 namespace sup {
 
-namespace sequencer {
+namespace oac_tree {
 
 const std::string AchieveConditionInstruction::Type = "AchieveCondition";
 static bool _achieve_condition_initialised_flag =
@@ -136,6 +136,6 @@ ExecutionStatus AchieveConditionInstruction::CalculateCompoundStatus() const
   return ExecutionStatus::NOT_FINISHED;
 }
 
-} // namespace sequencer
+} // namespace oac_tree
 
 } // namespace sup

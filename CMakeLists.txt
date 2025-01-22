@@ -1,6 +1,6 @@
-# Project       : Supervision and Automation - Sequencer
+# Project       : Supervision and Automation - oac-tree
 #
-# Description   : SUP sequencer control plugin
+# Description   : SUP oac-tree control plugin
 #
 # Author        : Walter Van Herck (IO)
 #
@@ -15,7 +15,7 @@
 # of the distribution package.
 
 cmake_minimum_required(VERSION 3.13...3.31)
-project(sup-sequencer-plugin-control VERSION 1.3.0 LANGUAGES CXX)
+project(sup-oac-tree-plugin-control VERSION 1.3.0 LANGUAGES CXX)
 
 option(COA_COVERAGE "Generate unit test coverage information" OFF)
 option(COA_BUILD_TESTS "Build unit tests" ON)

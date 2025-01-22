@@ -2,9 +2,9 @@
 * $HeadURL: $
 * $Id: $
 *
-* Project       : Supervision and Automation - Sequencer
+* Project       : Supervision and Automation - oac-tree
 *
-* Description   : SUP sequencer control plugin
+* Description   : SUP oac-tree control plugin
 *
 * Author        : Walter Van Herck (IO)
 *
@@ -21,11 +21,11 @@
 
 #include "test_user_interface.h"
 
-#include <sup/sequencer/constants.h>
+#include <sup/oac-tree/constants.h>
 
 namespace sup {
 
-namespace sequencer {
+namespace oac_tree {
 
 namespace test {
 
@@ -109,6 +109,6 @@ int TestUserInputInterface::GetUserChoice(const std::vector<std::string>& option
 
 } // namespace test
 
-} // namespace sequencer
+} // namespace oac_tree
 
 } // namespace sup

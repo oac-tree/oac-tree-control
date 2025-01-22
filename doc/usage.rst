@@ -5,6 +5,6 @@ Before being able to use this plugin in a procedure, the user should have it ins
 
 .. code-block:: xml
 
-  <Plugin>libsequencer-control.so</Plugin>
+  <Plugin>liboac-tree-control.so</Plugin>
 
 The user is then able to use all instructions provided by this plugin.
