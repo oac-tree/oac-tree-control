@@ -23,7 +23,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.iter.codac.units</groupId>
-    <artifactId>oac-tree-plugin-control</artifactId>
+    <artifactId>sequencer-plugin-control</artifactId>
     <packaging>codac</packaging>
     <!-- See ChangeLog file for details -->
     <version>2.0.0</version>
