@@ -99,8 +99,6 @@
                         <scriptlet type="posttrans">
                             <![CDATA[ ldconfig ]]>
                         </scriptlet>
-                        <!-- Symlinks -->
-                        <include type="symlink" link="/lib/sequencer/plugins/libsequencer-control.so" target="/lib/oac-tree/plugins/liboac-tree-control.so" linkroot="CODAC_ROOT" targetroot="CODAC_ROOT" />
                     </package>
                     <package name="docs">
                         <!--  Public API headers  -->
@@ -136,6 +134,7 @@
                                 <argument>-DCMAKE_INSTALL_DOCDIR=doc/${project.artifactId}</argument>
                                 <argument>-DTEST_OUTPUT_DIRECTORY=${project.build.directory}/test</argument>
                                 <argument>-DCOA_COVERAGE=${coverage}</argument>
+                                <argument>-DCOA_CODAC_BACKWARD_COMPATIBILITY=ON</argument>
                                 <argument>${project.build.directory}/SOURCE</argument>
                             </arguments>
                         </configuration>
