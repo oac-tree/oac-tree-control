@@ -4,7 +4,6 @@
 
 include(GNUInstallDirs)
 include(CTest)
-include(COASetupCodacEnvironment)
 
 # -----------------------------------------------------------------------------
 # C++ version
@@ -18,27 +17,16 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # -----------------------------------------------------------------------------
-# Common project configuration
+# Variables
 # -----------------------------------------------------------------------------
-
-include(COACommonConfig)
-include(COASetupCodacEnvironment)
+set(LIBVERSION ${PROJECT_VERSION})
+set(LIBSOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR})
 
 # -----------------------------------------------------------------------------
 # Directories
 # -----------------------------------------------------------------------------
-if (NOT DEFINED PLUGIN_PATH)
-  set(PLUGIN_PATH ${CMAKE_INSTALL_LIBDIR}/oac-tree/plugins)
-endif()
-message(DEBUG "PLUGIN_PATH: ${PLUGIN_PATH}")
-
-if (NOT DEFINED PLUGIN_RUNTIME_DIRECTORY)
-  set(PLUGIN_RUNTIME_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_PATH})
+if(NOT DEFINED TEST_OUTPUT_DIRECTORY)
+  set(TEST_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/test_bin)
 endif()
 
-file(MAKE_DIRECTORY ${PLUGIN_RUNTIME_DIRECTORY})
-
-# -----------------------------------------------------------------------------
-# Dependencies
-# -----------------------------------------------------------------------------
-find_package(oac-tree REQUIRED)
+file(MAKE_DIRECTORY ${TEST_OUTPUT_DIRECTORY})
