@@ -8,7 +8,7 @@
         <ParallelSequence successThreshold="1" failureThreshold="2">
             <AchieveCondition>
                 <Equals leftVar="live" rightVar="one"/>
-                <Wait timeout="1.0"/>
+                <Wait timeout="5.0"/>
             </AchieveCondition>
             <Inverter>
                 <Sequence>

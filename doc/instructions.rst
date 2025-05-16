@@ -4,7 +4,24 @@ Instructions
 AchieveCondition
 ^^^^^^^^^^^^^^^^
 
-The ``AchieveCondition`` instruction is a compound instruction that requires exactly two child instructions (or instruction trees). The first child is the condition to achieve, while the second child is an action that will be taken if the condition was not satisfied on the first try.
+The ``AchieveCondition`` instruction is a compound instruction that requires exactly two child instructions (or instruction trees). The first child is the condition to achieve, while the second child is an action that will be taken if the condition was not satisfied on the first try. If the action is asynchronous, i.e. it returns ``RUNNING`` while executing, it will be interrupted if the condition is satisfied before the action has finished.
+
+The following instruction trees are equivalent:
+
+.. code-block:: text
+
+   # With AchieveCondition
+   AchieveCondition
+   ├── <Condition>
+   └── <Action>
+
+   # Using a ReactiveFallback
+   ReactiveFallback
+   ├── <Condition>
+   └── Sequence
+       ├── ForceSuccess
+       │   └── <Action>
+       └── <Condition>
 
 .. note::
 
@@ -16,7 +33,7 @@ The ``AchieveCondition`` instruction is a compound instruction that requires exa
 
 This procedure will execute two branches in parallel:
 
-* The first branch is an ``AchieveCondition`` instruction that will check if the ``live`` variable is equal to one. If this is not the case, it will execute its second child, which is a simple wait instruction. After this wait, the condition will be checked again and ``AchieveCondition`` will immediately report its status: ``SUCCESS`` if the condition was satisfied, ``FAILURE`` otherwise.
+* The first branch is an ``AchieveCondition`` instruction that will check if the ``live`` variable is equal to one. If this is not the case, it will execute its second child, which is a simple wait instruction, which is asynchronous. This means that it will be interrupted as soon as the condition becomes true.
 * The second branch consists of a short wait instruction, followed by a copy instruction that will make sure the aforementioned condition will be satisfied.
 
 This procedure will succeed, since the second branch makes sure the condition will be satisfied, at least after the wait instruction.

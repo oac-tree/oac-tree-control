@@ -24,6 +24,7 @@
 
 #include <sup/oac-tree/instruction_registry.h>
 #include <sup/oac-tree/instruction_utils.h>
+#include <sup/oac-tree/procedure_context.h>
 #include <sup/oac-tree/user_interface.h>
 
 namespace sup {
@@ -34,16 +35,56 @@ const std::string AchieveConditionInstruction::Type = "AchieveCondition";
 static bool _achieve_condition_initialised_flag =
   RegisterGlobalInstruction<AchieveConditionInstruction>();
 
+const std::string LOG_MESSAGE_PREFIX =
+  "Forwarded log message from internal instruction of AchieveCondition: ";
+
 AchieveConditionInstruction::AchieveConditionInstruction()
   : CompoundInstruction(Type)
-  , m_action_done{false}
+  , m_internal_instruction_tree{}
+  , m_instr_manager{}
 {}
 
 AchieveConditionInstruction::~AchieveConditionInstruction() = default;
 
 void AchieveConditionInstruction::SetupImpl(const Procedure& proc)
 {
-  (void)proc;
+  auto instr_tree = CreateWrappedInstructionTree();
+  std::swap(m_internal_instruction_tree, instr_tree);
+  m_internal_instruction_tree->Setup(proc);
+}
+
+ExecutionStatus AchieveConditionInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
+{
+  auto& wrapped_ui = m_instr_manager.GetWrappedUI(ui, LOG_MESSAGE_PREFIX);
+  m_internal_instruction_tree->ExecuteSingle(wrapped_ui, ws);
+  return m_internal_instruction_tree->GetStatus();
+}
+
+void AchieveConditionInstruction::ResetHook(UserInterface& ui)
+{
+  if (m_internal_instruction_tree)
+  {
+    auto& wrapped_ui = m_instr_manager.GetWrappedUI(ui, LOG_MESSAGE_PREFIX);
+    m_internal_instruction_tree->Reset(wrapped_ui);
+  }
+}
+
+void AchieveConditionInstruction::HaltImpl()
+{
+  if (m_internal_instruction_tree)
+  {
+    m_internal_instruction_tree->Halt();
+  }
+}
+
+std::vector<const Instruction*> AchieveConditionInstruction::NextInstructionsImpl() const
+{
+  return FilterNextInstructions(*this, m_internal_instruction_tree.get());
+}
+
+std::unique_ptr<Instruction> AchieveConditionInstruction::CreateWrappedInstructionTree()
+{
+  m_instr_manager.ClearWrappers();
   auto children = ChildInstructions();
   if (children.size() != 2)
   {
@@ -51,90 +92,31 @@ void AchieveConditionInstruction::SetupImpl(const Procedure& proc)
       "This compound instruction requires exactly two child instructions";
     throw InstructionSetupException(error_message);
   }
-  SetupChildren(proc);
-}
 
-ExecutionStatus AchieveConditionInstruction::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
-{
-  auto children = ChildInstructions();
-  auto condition = children[0];
-  auto condition_status = condition->GetStatus();
-  if (NeedsExecute(condition_status))
-  {
-    children[0]->ExecuteSingle(ui, ws);
-    return CalculateCompoundStatus();
-  }
-  if (!m_action_done)
-  {
-    HandleAction(ui, ws);
-  }
-  return CalculateCompoundStatus();
-}
+  // Wrapped condition
+  auto cond_wrapper = m_instr_manager.CreateInstructionWrapper(*children[0]);
 
-void AchieveConditionInstruction::ResetHook(UserInterface& ui)
-{
-  ResetChildren(ui);
-  m_action_done = false;
-}
+  // Wrapped action
+  auto action_wrapper = m_instr_manager.CreateInstructionWrapper(*children[1]);
 
-std::vector<const Instruction*> AchieveConditionInstruction::NextInstructionsImpl() const
-{
-  std::vector<const Instruction*> result;
-  auto children = ChildInstructions();
-  auto condition = children[0];
-  auto condition_status = condition->GetStatus();
-  if (ReadyForExecute(condition_status))
-  {
-    result.push_back(condition);
-  }
-  if (IsFinishedStatus(condition_status) && !m_action_done)
-  {
-    auto action = children[1];
-    auto action_status = action->GetStatus();
-    if (ReadyForExecute(action_status))
-    {
-      result.push_back(action);
-    }
-  }
-  return result;
-}
+  // Ignore failure status of action
+  auto force_success = GlobalInstructionRegistry().Create("ForceSuccess");
+  force_success->InsertInstruction(std::move(action_wrapper), 0);
 
-void AchieveConditionInstruction::HandleAction(UserInterface& ui, Workspace& ws)
-{
-  auto children = ChildInstructions();
-  auto action = children[1];
-  auto action_status = action->GetStatus();
-  if (NeedsExecute(action_status))
-  {
-    action->ExecuteSingle(ui, ws);
-  }
-  action_status = action->GetStatus();
-  if (IsFinishedStatus(action_status))
-  {
-    ResetChildren(ui);
-    m_action_done = true;
-  }
-}
+  // Use a clone of the condition here.
+  auto cond_wrapper_2 = CloneInstructionTree(*children[0]);
 
-ExecutionStatus AchieveConditionInstruction::CalculateCompoundStatus() const
-{
-  auto children = ChildInstructions();
-  auto condition = children[0];
-  auto condition_status = condition->GetStatus();
-  // When condition did not fail (yet) or the action was already performed, return its status.
-  if (condition_status != ExecutionStatus::FAILURE || m_action_done)
-  {
-    return condition_status;
-  }
-  // Otherwise return that status of the action.
-  auto action = children[1];
-  auto action_status = action->GetStatus();
-  return action->GetStatus();
-  if (action_status == ExecutionStatus::RUNNING)
-  {
-    return ExecutionStatus::RUNNING;
-  }
-  return ExecutionStatus::NOT_FINISHED;
+  // Sequence combining action and recheck of condition
+  auto sequence = GlobalInstructionRegistry().Create("Sequence");
+  sequence->InsertInstruction(std::move(force_success), 0);
+  sequence->InsertInstruction(std::move(cond_wrapper_2), 1);
+
+  // Reactive fallback combining the condition and the sequence
+  auto fallback = GlobalInstructionRegistry().Create("ReactiveFallback");
+  fallback->InsertInstruction(std::move(cond_wrapper), 0);
+  fallback->InsertInstruction(std::move(sequence), 1);
+
+  return fallback;
 }
 
 } // namespace oac_tree

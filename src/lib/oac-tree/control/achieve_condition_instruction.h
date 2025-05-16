@@ -52,14 +52,18 @@ public:
   static const std::string Type;
 
 private:
-  bool m_action_done;
   void SetupImpl(const Procedure& proc) override;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
   void ResetHook(UserInterface& ui) override;
+  void HaltImpl() override;
   std::vector<const Instruction*> NextInstructionsImpl() const override;
 
-  void HandleAction(UserInterface& ui, Workspace& ws);
-  ExecutionStatus CalculateCompoundStatus() const;
+  // void HandleAction(UserInterface& ui, Workspace& ws);
+  // ExecutionStatus CalculateCompoundStatus() const;
+  std::unique_ptr<Instruction> CreateWrappedInstructionTree();
+
+  std::unique_ptr<Instruction> m_internal_instruction_tree;
+  WrappedInstructionManager m_instr_manager;
 };
 
 }  // namespace oac_tree
