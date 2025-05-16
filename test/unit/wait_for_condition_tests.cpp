@@ -144,7 +144,7 @@ TEST_F(WaitForConditionTest, VariableTimeoutWrongType)
             <Equals leftVar="live" rightVar="one"/>
         </WaitForCondition>
         <Sequence>
-            <Wait timeout="0.1"/>
+            <Wait timeout="1.0"/>
             <Copy inputVar="one" outputVar="live"/>
         </Sequence>
     </ParallelSequence>
@@ -168,7 +168,7 @@ TEST_F(WaitForConditionTest, VariableTimeoutNotPresent)
             <Equals leftVar="live" rightVar="one"/>
         </WaitForCondition>
         <Sequence>
-            <Wait timeout="0.1"/>
+            <Wait timeout="1.0"/>
             <Copy inputVar="one" outputVar="live"/>
         </Sequence>
     </ParallelSequence>

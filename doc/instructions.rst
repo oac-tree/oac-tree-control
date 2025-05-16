@@ -202,6 +202,22 @@ WaitForCondition
 
 The ``WaitForCondition`` instruction is a compound instruction with exactly one child instruction (or instruction tree). The child denotes the condition to wait for, where the ``SUCCESS`` status of the child means that the condition is satisfied and ``FAILURE`` that it is not.
 
+The following instruction trees are equivalent:
+
+.. code-block:: text
+
+   # With WaitForCondition
+   WaitForCondition timeout="5.0"
+   └── <Condition>
+
+   # Using a ReactiveFallback
+   ReactiveFallback
+   ├── <Condition>
+   └── Sequence
+       ├── ForceSuccess
+       │   └── Wait timeout="5.0"
+       └── <Condition>
+
 .. list-table::
    :widths: 25 25 15 50
    :header-rows: 1

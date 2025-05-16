@@ -26,6 +26,7 @@
 
 #include <sup/oac-tree/instruction_registry.h>
 #include <sup/oac-tree/instruction_utils.h>
+#include <sup/oac-tree/procedure_context.h>
 
 namespace sup {
 
@@ -100,32 +101,29 @@ std::unique_ptr<Instruction> WaitForConditionInstruction::CreateWrappedInstructi
     throw InstructionSetupException(error_message);
   }
 
-  // Inverted wait with timeout branch
+  // Wrapped condition
+  auto cond_wrapper = m_instr_manager.CreateInstructionWrapper(*children[0]);
+
+  // Wait with timeout branch
   auto wait = GlobalInstructionRegistry().Create("Wait");
   wait->AddAttribute("timeout", GetAttributeString(TIMEOUT_ATTR_NAME));
   auto success_wait = GlobalInstructionRegistry().Create("ForceSuccess");
   success_wait->InsertInstruction(std::move(wait), 0);
-  auto inv_wait = GlobalInstructionRegistry().Create("Inverter");
-  inv_wait->InsertInstruction(std::move(success_wait), 0);
 
-  // Branch that listens and only exits with success when condition is satisfied
-  auto wrapper = m_instr_manager.CreateInstructionWrapper(*children[0]);
-  auto inv_cond = GlobalInstructionRegistry().Create("Inverter");
-  inv_cond->InsertInstruction(std::move(wrapper), 0);
-  auto listen = GlobalInstructionRegistry().Create("Listen");
-  listen->AddAttribute("varNames", GetAttributeString(VARNAMES_ATTRIBUTE_NAME));
-  listen->InsertInstruction(std::move(inv_cond), 0);
-  auto inv_listen = GlobalInstructionRegistry().Create("Inverter");
-  inv_listen->InsertInstruction(std::move(listen), 0);
+  // Use a clone of the condition here.
+  auto cond_wrapper_2 = CloneInstructionTree(*children[0]);
 
-  // Parallel sequence that aggregates both
-  auto parallel = GlobalInstructionRegistry().Create("ParallelSequence");
-  parallel->AddAttribute("successThreshold", "1");
-  parallel->AddAttribute("failureThreshold", "1");
-  parallel->InsertInstruction(std::move(inv_wait), 0);
-  parallel->InsertInstruction(std::move(inv_listen), 1);
+  // Sequence combining action and recheck of condition
+  auto sequence = GlobalInstructionRegistry().Create("Sequence");
+  sequence->InsertInstruction(std::move(success_wait), 0);
+  sequence->InsertInstruction(std::move(cond_wrapper_2), 1);
 
-  return parallel;
+  // Reactive fallback combining the condition and the sequence
+  auto fallback = GlobalInstructionRegistry().Create("ReactiveFallback");
+  fallback->InsertInstruction(std::move(cond_wrapper), 0);
+  fallback->InsertInstruction(std::move(sequence), 1);
+
+  return fallback;
 }
 
 } // namespace oac_tree
