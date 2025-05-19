@@ -35,8 +35,8 @@ const std::string AchieveConditionWithTimeoutInstruction::Type = "AchieveConditi
 static bool _wait_for_condition_initialised_flag =
   RegisterGlobalInstruction<AchieveConditionWithTimeoutInstruction>();
 
-const std::string TIMEOUT_ATTR_NAME = "timeout";
 const std::string VARNAMES_ATTRIBUTE_NAME = "varNames";
+const std::string TIMEOUT_ATTR_NAME = "timeout";
 
 const std::string LOG_MESSAGE_PREFIX =
   "Forwarded log message from internal instruction of AchieveConditionWithTimeout: ";
@@ -105,27 +105,26 @@ std::unique_ptr<Instruction> AchieveConditionWithTimeoutInstruction::CreateWrapp
 
   // Wrapped action
   auto action_wrapper = m_instr_manager.CreateInstructionWrapper(*children[1]);
+
+  // Ignore failure status of action
   auto force_success = GlobalInstructionRegistry().Create("ForceSuccess");
   force_success->InsertInstruction(std::move(action_wrapper), 0);
 
-  // Wait for condition with another wrapped condition
-  // To avoid issues with aliasing of the condition (which would break the tree structure, as it
-  // implies two different branches having an identical subinstruction), the condition tree
-  // is cloned here.
-  auto cond_wrapper_2 = CloneInstructionTree(*children[0]);
-  auto wait_with_timeout = GlobalInstructionRegistry().Create("WaitForCondition");
-  wait_with_timeout->AddAttribute(VARNAMES_ATTRIBUTE_NAME,
-                                  GetAttributeString(VARNAMES_ATTRIBUTE_NAME));
-  wait_with_timeout->AddAttribute(TIMEOUT_ATTR_NAME, GetAttributeString(TIMEOUT_ATTR_NAME));
-  wait_with_timeout->InsertInstruction(std::move(cond_wrapper_2), 0);
+  // Asynchronous wait for the timeout
+  auto wait = GlobalInstructionRegistry().Create("Wait");
+  wait->AddAttribute("timeout", GetAttributeString(TIMEOUT_ATTR_NAME));
 
-  // Sequence combining action and wait with timeout
+  // Use a clone of the condition here.
+  auto cond_wrapper_2 = CloneInstructionTree(*children[0]);
+
+  // Sequence combining action and recheck of condition
   auto sequence = GlobalInstructionRegistry().Create("Sequence");
   sequence->InsertInstruction(std::move(force_success), 0);
-  sequence->InsertInstruction(std::move(wait_with_timeout), 1);
+  sequence->InsertInstruction(std::move(wait), 1);
+  sequence->InsertInstruction(std::move(cond_wrapper_2), 2);
 
-  // Fallback combining the condition and the sequence
-  auto fallback = GlobalInstructionRegistry().Create("Fallback");
+  // Reactive fallback combining the condition and the sequence
+  auto fallback = GlobalInstructionRegistry().Create("ReactiveFallback");
   fallback->InsertInstruction(std::move(cond_wrapper), 0);
   fallback->InsertInstruction(std::move(sequence), 1);
 

@@ -104,11 +104,30 @@ This procedure will check if the ``live`` variable is equal to one. Since this i
 AchieveConditionWithTimeout
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``AchieveConditionWithTimeout`` instruction is a compound instruction with exactly two child instructions (or instruction trees). The first child is the condition to achieve, while the second child is an action that will be taken if the condition was not satisfied on the first try.
+The ``AchieveConditionWithTimeout`` instruction is a compound instruction with exactly two child instructions (or instruction trees). The first child is the condition to achieve, while the second child is an action that will be taken if the condition was not satisfied on the first try. If the action is asynchronous, i.e. it returns ``RUNNING`` while executing, it will be interrupted if the condition is satisfied before the action has finished.
 
 Its behavior is again similar to the ``AchieveCondition`` instruction, except that:
 
 * After performing the action (if the condition was not immediately satisfied), the instruction allows for a certain time to achieve the condition.
+
+The following instruction trees are equivalent:
+
+.. code-block:: text
+
+   # With AchieveConditionWithTimeout
+   AchieveConditionWithTimeout timeout=<timeout>
+   ├── <Condition>
+   └── <Action>
+
+   # Using a ReactiveFallback
+   ReactiveFallback
+   ├── <Condition>
+   └── Sequence
+       ├── ForceSuccess
+       │   └── <Action>
+       ├── Wait timeout=<timeout>
+       └── <Condition>
+
 
 .. list-table::
    :widths: 25 25 15 50
@@ -139,7 +158,7 @@ Its behavior is again similar to the ``AchieveCondition`` instruction, except th
 
 **Example**
 
-This procedure will check if the ``live`` variable is equal to one. Since this is not the case, it will try its child action, which waits for one second. Afterwards, the condition is again evaluated and still found to be false, i.e. ``FAILURE``. The ``AchieveConditionWithOverride`` instruction will then monitor the ``live`` variable for changes to see if the condition may become satisfied during a given period, which is three seconds. Since the ``live`` variable never changes, after this period, the procedure will exit with a ``FAILURE`` status.
+This procedure will check if the ``live`` variable is equal to one. Since this is not the case, it will try its child action, which waits for one second. Afterwards, the condition is again evaluated and still found to be false, i.e. ``FAILURE``. The ``AchieveConditionWithOverride`` instruction will allow for the condition to become true with a given timeout of three seconds. Since the ``live`` variable never changes, after this period, the procedure will exit with a ``FAILURE`` status.
 
 .. code-block:: xml
 
