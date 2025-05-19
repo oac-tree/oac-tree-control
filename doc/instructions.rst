@@ -128,7 +128,6 @@ The following instruction trees are equivalent:
        ├── Wait timeout=<timeout>
        └── <Condition>
 
-
 .. list-table::
    :widths: 25 25 15 50
    :header-rows: 1
@@ -175,6 +174,21 @@ ExecuteWhile
 ^^^^^^^^^^^^
 
 The ``ExecuteWhile`` instruction is a compound instruction with exactly two child instructions (or instruction trees). The first child is the instruction tree to execute, while the second child denotes a condition that must be satisfied during the first child's execution. As soon as this condition fails, i.e. returns ``FAILURE``, the execution of the first child is interrupted and the parent ``ExecuteWhile`` instruction will return ``FAILURE``. Only when the first child was successfully executed, while satisfying the condition all the time, will the parent instruction return ``SUCCESS``.
+
+The following instruction trees are equivalent:
+
+.. code-block:: text
+
+   # With ExecuteWhile
+   ExecuteWhile
+   ├── <Action>
+   └── <Condition>
+
+   # Using a ReactiveSequence
+   ReactiveSequence
+   ├── <Condition>
+   └── Async
+       └── <Action>
 
 .. list-table::
    :widths: 25 25 15 50

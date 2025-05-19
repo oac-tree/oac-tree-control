@@ -97,23 +97,22 @@ std::unique_ptr<Instruction> ExecuteWhileInstruction::CreateWrappedInstructionTr
     throw InstructionSetupException(error_message);
   }
 
-  // Wrapped execution tree
+  // Wrapped condition
+  auto condition_wrapper = m_instr_manager.CreateInstructionWrapper(*children[1]);
+
+  // Wrapped action tree
   auto tree_wrapper = m_instr_manager.CreateInstructionWrapper(*children[0]);
 
-  // Condition monitoring tree
-  auto condition_wrapper = m_instr_manager.CreateInstructionWrapper(*children[1]);
-  auto listen = GlobalInstructionRegistry().Create("Listen");
-  listen->AddAttribute("varNames", GetAttributeString(VARNAMES_ATTRIBUTE_NAME));
-  listen->InsertInstruction(std::move(condition_wrapper), 0);
+  // Make action asynchronous
+  auto async_action = GlobalInstructionRegistry().Create("Async");
+  async_action->InsertInstruction(std::move(tree_wrapper), 0);
 
-  // Parallel sequence that aggregates both
-  auto parallel = GlobalInstructionRegistry().Create("ParallelSequence");
-  parallel->AddAttribute("successThreshold", "1");
-  parallel->AddAttribute("failureThreshold", "1");
-  parallel->InsertInstruction(std::move(tree_wrapper), 0);
-  parallel->InsertInstruction(std::move(listen), 1);
+  // Reactive sequence combining the condition and the action
+  auto reactive_sequence = GlobalInstructionRegistry().Create("ReactiveSequence");
+  reactive_sequence->InsertInstruction(std::move(condition_wrapper), 0);
+  reactive_sequence->InsertInstruction(std::move(async_action), 1);
 
-  return parallel;
+  return reactive_sequence;
 }
 
 } // namespace oac_tree
