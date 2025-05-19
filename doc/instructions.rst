@@ -40,7 +40,7 @@ This procedure will succeed, since the second branch makes sure the condition wi
 
 .. code-block:: xml
 
-    <ParallelSequence successThreshold="1" failureThreshold="2">
+    <ParallelSequence>
         <AchieveCondition>
             <Equals leftVar="live" rightVar="one"/>
             <Wait timeout="1.0"/>
@@ -87,8 +87,8 @@ Its behavior is very similar to the ``AchieveCondition`` instruction, except tha
 
 **Example**
 
-This procedure will check if the ``live`` variable is equal to one. Since this is not the case, it will try its child action, which waits for one second. Afterwards, the condition is again evaluated and still found to be false, i.e. ``FAILURE``. This will trigger the user input part, where the user can select between ``Retry``, ``Override`` or ``Abort``. Depending on this choice, the
-``AchieveConditionWithOverride`` instruction will restart from the beginning, return ``SUCCESS`` or return ``FAILURE`` respectively.
+This procedure will check if the ``live`` variable is equal to one. Since this is not the case, it will try its child action, which waits for one second. Afterwards, the condition is again evaluated and still found to be false. This will trigger the user input part, where the user can select between ``Retry``, ``Override`` or ``Abort``. Depending on this choice, the
+``AchieveConditionWithOverride`` instruction will restart from the beginning, return ``SUCCESS`` or ``FAILURE`` respectively.
 
 .. code-block:: xml
 
