@@ -5,17 +5,15 @@
            xs:schemaLocation="http://codac.iter.org/sup/oac-tree oac-tree.xsd">
     <Plugin>liboac-tree-control.so</Plugin>
     <Sequence>
-        <ParallelSequence successThreshold="1" failureThreshold="2">
+        <ParallelSequence>
             <AchieveCondition>
                 <Equals leftVar="live" rightVar="one"/>
                 <Wait timeout="5.0"/>
             </AchieveCondition>
-            <Inverter>
-                <Sequence>
-                    <Wait timeout="0.2"/>
-                    <Copy inputVar="one" outputVar="live"/>
-                </Sequence>
-            </Inverter>
+            <Sequence>
+                <Wait timeout="0.2"/>
+                <Copy inputVar="one" outputVar="live"/>
+            </Sequence>
         </ParallelSequence>
         <Message text="AchieveCondition successful!"/>
     </Sequence>

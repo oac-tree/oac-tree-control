@@ -45,12 +45,10 @@ This procedure will succeed, since the second branch makes sure the condition wi
             <Equals leftVar="live" rightVar="one"/>
             <Wait timeout="1.0"/>
         </AchieveCondition>
-        <Inverter>
-            <Sequence>
-                <Wait timeout="0.2"/>
-                <Copy inputVar="one" outputVar="live"/>
-            </Sequence>
-        </Inverter>
+        <Sequence>
+            <Wait timeout="0.2"/>
+            <Copy inputVar="one" outputVar="live"/>
+        </Sequence>
     </ParallelSequence>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
