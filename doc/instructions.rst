@@ -115,7 +115,7 @@ The following instruction trees are equivalent:
 .. code-block:: text
 
    # With AchieveConditionWithTimeout
-   AchieveConditionWithTimeout timeout=<timeout>
+   AchieveConditionWithTimeout timeout="10.0"
    ├── <Condition>
    └── <Action>
 
@@ -125,7 +125,7 @@ The following instruction trees are equivalent:
    └── Sequence
        ├── ForceSuccess
        │   └── <Action>
-       ├── Wait timeout=<timeout>
+       ├── Wait timeout="10.0"
        └── <Condition>
 
 .. list-table::
@@ -189,6 +189,10 @@ The following instruction trees are equivalent:
    ├── <Condition>
    └── Async
        └── <Action>
+
+.. note::
+
+   If the action is already asynchronous, i.e. it can return ``RUNNING``, a simple ``ReactiveSequence`` is a better choice to achieve this behavior.
 
 .. list-table::
    :widths: 25 25 15 50
