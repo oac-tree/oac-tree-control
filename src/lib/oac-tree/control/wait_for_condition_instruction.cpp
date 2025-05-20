@@ -24,6 +24,7 @@
 
 #include "wrapped_user_interface.h"
 
+#include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/instruction_registry.h>
 #include <sup/oac-tree/instruction_utils.h>
 #include <sup/oac-tree/procedure_context.h>
@@ -36,9 +37,6 @@ const std::string WaitForConditionInstruction::Type = "WaitForCondition";
 static bool _wait_for_condition_initialised_flag =
   RegisterGlobalInstruction<WaitForConditionInstruction>();
 
-const std::string TIMEOUT_ATTR_NAME = "timeout";
-const std::string VARNAMES_ATTRIBUTE_NAME = "varNames";
-
 const std::string LOG_MESSAGE_PREFIX =
   "Forwarded log message from internal instruction of WaitForCondition: ";
 
@@ -47,8 +45,8 @@ WaitForConditionInstruction::WaitForConditionInstruction()
   , m_internal_instruction_tree{}
   , m_instr_manager{}
 {
-  AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME).SetMandatory();
-  AddAttributeDefinition(TIMEOUT_ATTR_NAME, sup::dto::Float64Type)
+  AddAttributeDefinition(Constants::VARIABLE_NAMES_ATTRIBUTE_NAME).SetMandatory();
+  AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
 }
 
@@ -106,7 +104,7 @@ std::unique_ptr<Instruction> WaitForConditionInstruction::CreateWrappedInstructi
 
   // Wait with timeout branch
   auto wait = GlobalInstructionRegistry().Create("Wait");
-  wait->AddAttribute("timeout", GetAttributeString(TIMEOUT_ATTR_NAME));
+  wait->AddAttribute("timeout", GetAttributeString(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME));
   auto success_wait = GlobalInstructionRegistry().Create("ForceSuccess");
   success_wait->InsertInstruction(std::move(wait), 0);
 

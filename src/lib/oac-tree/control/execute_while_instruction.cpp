@@ -24,6 +24,7 @@
 
 #include "wrapped_user_interface.h"
 
+#include <sup/oac-tree/constants.h>
 #include <sup/oac-tree/instruction_registry.h>
 #include <sup/oac-tree/instruction_utils.h>
 
@@ -34,8 +35,6 @@ namespace oac_tree {
 const std::string ExecuteWhileInstruction::Type = "ExecuteWhile";
 static bool _execute_while_initialised_flag = RegisterGlobalInstruction<ExecuteWhileInstruction>();
 
-const std::string VARNAMES_ATTRIBUTE_NAME = "varNames";
-
 const std::string LOG_MESSAGE_PREFIX =
   "Forwarded log message from internal instruction of ExecuteWhile: ";
 
@@ -45,7 +44,7 @@ ExecuteWhileInstruction::ExecuteWhileInstruction()
   , m_internal_instruction_tree{}
   , m_instr_manager{}
 {
-  AddAttributeDefinition(VARNAMES_ATTRIBUTE_NAME).SetMandatory();
+  AddAttributeDefinition(Constants::VARIABLE_NAMES_ATTRIBUTE_NAME).SetMandatory();
 }
 
 ExecuteWhileInstruction::~ExecuteWhileInstruction() = default;
