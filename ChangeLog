@@ -1,3 +1,7 @@
+Changes for 2.2.0:
+
+- Removal of Instruction::NextInstructions API
+
 Changes for 2.1.0:
 
 - CMake changes to allow for pulling sup-protocol as a github dependency

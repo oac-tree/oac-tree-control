@@ -16,7 +16,7 @@
 # of the distribution package.
 
 cmake_minimum_required(VERSION 3.13...3.31)
-project(sup-oac-tree-plugin-control VERSION 2.1.0 LANGUAGES CXX)
+project(sup-oac-tree-plugin-control VERSION 2.2.0 LANGUAGES CXX)
 
 option(COA_COVERAGE "Generate unit test coverage information" OFF)
 option(COA_BUILD_TESTS "Build unit tests" ON)
