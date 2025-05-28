@@ -83,11 +83,6 @@ void WaitForConditionInstruction::ResetHook(UserInterface& ui)
   }
 }
 
-std::vector<const Instruction*> WaitForConditionInstruction::NextInstructionsImpl() const
-{
-  return FilterNextInstructions(*this, m_internal_instruction_tree.get());
-}
-
 std::unique_ptr<Instruction> WaitForConditionInstruction::CreateWrappedInstructionTree()
 {
   m_instr_manager.ClearWrappers();

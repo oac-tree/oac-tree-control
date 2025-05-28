@@ -56,7 +56,6 @@ private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
   void ResetHook(UserInterface& ui) override;
   void HaltImpl() override;
-  std::vector<const Instruction*> NextInstructionsImpl() const override;
 
   // void HandleAction(UserInterface& ui, Workspace& ws);
   // ExecutionStatus CalculateCompoundStatus() const;

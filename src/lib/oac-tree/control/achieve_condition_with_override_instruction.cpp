@@ -104,28 +104,6 @@ void AchieveConditionWithOverrideInstruction::ResetHook(UserInterface& ui)
   m_user_decision_needed = false;
 }
 
-std::vector<const Instruction*> AchieveConditionWithOverrideInstruction::NextInstructionsImpl() const
-{
-  std::vector<const Instruction*> result;
-  auto children = ChildInstructions();
-  auto condition = children[0];
-  auto condition_status = condition->GetStatus();
-  if (ReadyForExecute(condition_status))
-  {
-    result.push_back(condition);
-  }
-  else if (ActionNeeded())
-  {
-    auto action = children[1];
-    auto action_status = action->GetStatus();
-    if (ReadyForExecute(action_status))
-    {
-      result.push_back(action);
-    }
-  }
-  return result;
-}
-
 bool AchieveConditionWithOverrideInstruction::ActionDefined() const
 {
   return ChildrenCount() == 2;

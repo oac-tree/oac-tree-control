@@ -87,11 +87,6 @@ std::vector<const Instruction*> NonOwningInstructionWrapper::ChildInstructionsIm
   return GetInstruction()->ChildInstructions();
 }
 
-std::vector<const Instruction*> NonOwningInstructionWrapper::NextInstructionsImpl() const
-{
-  return m_instr->NextInstructions();
-}
-
 bool NonOwningInstructionWrapper::InsertInstructionImpl(std::unique_ptr<Instruction>&& child,
                                                         int index)
 {

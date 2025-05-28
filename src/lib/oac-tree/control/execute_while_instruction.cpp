@@ -80,11 +80,6 @@ void ExecuteWhileInstruction::ResetHook(UserInterface& ui)
   }
 }
 
-std::vector<const Instruction*> ExecuteWhileInstruction::NextInstructionsImpl() const
-{
-  return FilterNextInstructions(*this, m_internal_instruction_tree.get());
-}
-
 std::unique_ptr<Instruction> ExecuteWhileInstruction::CreateWrappedInstructionTree()
 {
   m_instr_manager.ClearWrappers();

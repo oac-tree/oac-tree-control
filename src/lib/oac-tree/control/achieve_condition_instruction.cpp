@@ -77,11 +77,6 @@ void AchieveConditionInstruction::HaltImpl()
   }
 }
 
-std::vector<const Instruction*> AchieveConditionInstruction::NextInstructionsImpl() const
-{
-  return FilterNextInstructions(*this, m_internal_instruction_tree.get());
-}
-
 std::unique_ptr<Instruction> AchieveConditionInstruction::CreateWrappedInstructionTree()
 {
   m_instr_manager.ClearWrappers();

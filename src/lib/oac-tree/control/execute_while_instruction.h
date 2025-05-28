@@ -58,7 +58,6 @@ private:
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
   void HaltImpl() override;
   void ResetHook(UserInterface& ui) override;
-  std::vector<const Instruction*> NextInstructionsImpl() const override;
   std::unique_ptr<Instruction> CreateWrappedInstructionTree();
 
   std::unique_ptr<Instruction> m_internal_instruction_tree;

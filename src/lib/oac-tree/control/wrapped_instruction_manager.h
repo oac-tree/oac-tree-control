@@ -62,9 +62,6 @@ private:
   void SetContext(UserInterface& ui);
 };
 
-std::vector<const Instruction*> FilterNextInstructions(const Instruction& instr,
-                                                       const Instruction* tree);
-
 }  // namespace oac_tree
 
 }  // namespace sup

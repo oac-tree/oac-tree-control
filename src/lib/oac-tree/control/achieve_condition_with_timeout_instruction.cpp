@@ -82,11 +82,6 @@ void AchieveConditionWithTimeoutInstruction::ResetHook(UserInterface& ui)
   }
 }
 
-std::vector<const Instruction*> AchieveConditionWithTimeoutInstruction::NextInstructionsImpl() const
-{
-  return FilterNextInstructions(*this, m_internal_instruction_tree.get());
-}
-
 std::unique_ptr<Instruction> AchieveConditionWithTimeoutInstruction::CreateWrappedInstructionTree()
 {
   m_instr_manager.ClearWrappers();

@@ -56,7 +56,6 @@ private:
   void ResetHook(UserInterface& ui) override;
   int ChildrenCountImpl() const override;
   std::vector<const Instruction*> ChildInstructionsImpl() const override;
-  std::vector<const Instruction*> NextInstructionsImpl() const override;
   bool InsertInstructionImpl(std::unique_ptr<Instruction>&& child, int index) override;
   std::unique_ptr<Instruction> TakeInstructionImpl(int index) override;
 };
