@@ -6,7 +6,7 @@
     <Plugin>liboac-tree-control.so</Plugin>
     <Sequence>
         <Repeat maxCount="3">
-            <ExecuteWhile varNames="live">
+            <ExecuteWhile>
                 <Wait timeout="0.2"/>
                 <Equals leftVar="live" rightVar="zero"/>
             </ExecuteWhile>

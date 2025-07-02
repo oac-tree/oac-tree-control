@@ -9,7 +9,7 @@
             <Sequence>
                 <Copy inputVar="zero" outputVar="live"/>
                 <ParallelSequence successThreshold="1" failureThreshold="2">
-                    <AchieveConditionWithOverride varNames="live">
+                    <AchieveConditionWithOverride>
                         <Equals leftVar="live" rightVar="one"/>
                         <Wait timeout="1.0"/>
                     </AchieveConditionWithOverride>

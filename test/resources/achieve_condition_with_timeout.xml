@@ -6,7 +6,7 @@
     <Plugin>liboac-tree-control.so</Plugin>
     <Sequence>
         <ParallelSequence successThreshold="1" failureThreshold="2">
-            <AchieveConditionWithTimeout varNames="live" timeout="3.0">
+            <AchieveConditionWithTimeout timeout="3.0">
                 <Equals leftVar="live" rightVar="one"/>
                 <Wait/>
             </AchieveConditionWithTimeout>

@@ -88,8 +88,6 @@ TEST_F(AchieveConditionWithTimeoutTest, Setup)
     ASSERT_TRUE(instr->InsertInstruction(std::move(wait_2), 1));
     Procedure proc;
     EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
-    EXPECT_TRUE(instr->AddAttribute("varNames", "does_not_matter"));
-    EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
     // Attribute cannot be parsed as double:
     EXPECT_TRUE(instr->AddAttribute("timeout", "five"));
     EXPECT_THROW(instr->Setup(proc), InstructionSetupException);

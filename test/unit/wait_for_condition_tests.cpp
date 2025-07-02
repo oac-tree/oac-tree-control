@@ -41,7 +41,7 @@ TEST_F(WaitForConditionTest, Success)
 {
   const std::string body{R"(
     <ParallelSequence>
-        <WaitForCondition varNames="live" timeout="1.0">
+        <WaitForCondition timeout="1.0">
             <Equals leftVar="live" rightVar="one"/>
         </WaitForCondition>
         <Sequence>
@@ -65,7 +65,7 @@ TEST_F(WaitForConditionTest, Setup)
   {
     // No child
     const std::string body{R"(
-      <WaitForCondition varNames="live" timeout="0.1"/>
+      <WaitForCondition timeout="0.1"/>
       <Workspace>
           <Local name="live" type='{"type":"uint64"}' value='0' />
       </Workspace>)"};
@@ -83,8 +83,6 @@ TEST_F(WaitForConditionTest, Setup)
     Procedure proc;
     EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
     EXPECT_TRUE(instr->AddAttribute("timeout", "1.0"));
-    EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
-    EXPECT_TRUE(instr->AddAttribute("varNames", "does_not_matter"));
     EXPECT_NO_THROW(instr->Setup(proc));
   }
 }
@@ -92,15 +90,9 @@ TEST_F(WaitForConditionTest, Setup)
 TEST_F(WaitForConditionTest, Failure)
 {
   const std::string body{R"(
-    <ParallelSequence>
-        <WaitForCondition varNames="live" timeout="0.1">
-            <Equals leftVar="live" rightVar="one"/>
-        </WaitForCondition>
-        <Sequence>
-            <Wait timeout="1.0"/>
-            <Copy inputVar="one" outputVar="live"/>
-        </Sequence>
-    </ParallelSequence>
+    <WaitForCondition timeout="0.1">
+        <Equals leftVar="live" rightVar="one"/>
+    </WaitForCondition>
     <Workspace>
         <Local name="live" type='{"type":"uint64"}' value='0' />
         <Local name="one" type='{"type":"uint64"}' value='1' />
@@ -116,7 +108,7 @@ TEST_F(WaitForConditionTest, VariableTimeout)
 {
   const std::string body{R"(
     <ParallelSequence>
-        <WaitForCondition varNames="live" timeout="@timeout">
+        <WaitForCondition timeout="@timeout">
             <Equals leftVar="live" rightVar="one"/>
         </WaitForCondition>
         <Sequence>
@@ -140,7 +132,7 @@ TEST_F(WaitForConditionTest, VariableTimeoutWrongType)
 {
   const std::string body{R"(
     <ParallelSequence>
-        <WaitForCondition varNames="live" timeout="@timeout">
+        <WaitForCondition timeout="@timeout">
             <Equals leftVar="live" rightVar="one"/>
         </WaitForCondition>
         <Sequence>
@@ -164,7 +156,7 @@ TEST_F(WaitForConditionTest, VariableTimeoutNotPresent)
 {
   const std::string body{R"(
     <ParallelSequence>
-        <WaitForCondition varNames="live" timeout="@timeout">
+        <WaitForCondition timeout="@timeout">
             <Equals leftVar="live" rightVar="one"/>
         </WaitForCondition>
         <Sequence>

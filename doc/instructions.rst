@@ -156,7 +156,7 @@ This procedure will check if the ``live`` variable is equal to one. Since this i
 
 .. code-block:: xml
 
-    <AchieveConditionWithTimeout varNames="live" timeout="3.0">
+    <AchieveConditionWithTimeout timeout="3.0">
         <Equals leftVar="live" rightVar="one"/>
         <Wait timeout="1"/>
     </AchieveConditionWithTimeout>
@@ -209,7 +209,7 @@ This procedure will continuously check if the ``live`` variable is zero and will
 
 .. code-block:: xml
 
-    <ExecuteWhile varNames="live">
+    <ExecuteWhile>
         <Wait timeout="1.0"/>
         <Equals leftVar="live" rightVar="zero"/>
     </ExecuteWhile>
@@ -234,27 +234,11 @@ The following instruction trees are equivalent:
    # Using a ReactiveFallback
    ReactiveFallback
    ├── <Condition>
-   └── Sequence
-       ├── ForceSuccess
-       │   └── Wait timeout="5.0"
-       └── <Condition>
+   └── Fail timeout="5.0"
 
-.. list-table::
-   :widths: 25 25 15 50
-   :header-rows: 1
+.. note::
 
-   * - Attribute name
-     - Attribute type
-     - Mandatory
-     - Description
-   * - varNames
-     - StringType
-     - yes
-     - Comma-separated list of variable names to monitor for changes
-   * - timeout
-     - Float64Type
-     - yes
-     - Timeout in seconds
+   This instruction has no custom attributes.
 
 .. note::
 
@@ -272,7 +256,7 @@ This procedure will monitor the ``live`` variable and wait with a timeout of two
 
 .. code-block:: xml
 
-    <WaitForCondition varNames="live" timeout="2.0">
+    <WaitForCondition timeout="2.0">
         <Equals leftVar="live" rightVar="one"/>
     </WaitForCondition>
     <Workspace>

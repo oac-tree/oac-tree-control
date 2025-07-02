@@ -42,8 +42,6 @@ namespace oac_tree
  * @details This compound instruction expects exactly two child instructions: the first one is the
  * instruction (or tree) to execute while the condition holds and the second one is the condition
  * to check.
- * The attribute 'varNames' is mandatory and denotes the variables on which the condition depends.
- * This is necessary, so the instruction will only check the condition on those variable changes.
  */
 class ExecuteWhileInstruction : public CompoundInstruction
 {

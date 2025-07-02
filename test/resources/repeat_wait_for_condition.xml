@@ -9,7 +9,7 @@
             <Sequence>
                 <Copy inputVar="zero" outputVar="live"/>
                 <ParallelSequence>
-                    <WaitForCondition varNames="live" timeout="1.0">
+                    <WaitForCondition timeout="1.0">
                         <Equals leftVar="live" rightVar="one"/>
                     </WaitForCondition>
                     <Sequence>

@@ -6,7 +6,7 @@
     <Plugin>liboac-tree-control.so</Plugin>
     <Sequence>
         <ParallelSequence>
-            <WaitForCondition varNames="live" timeout="2.0">
+            <WaitForCondition timeout="2.0">
                 <Equals leftVar="live" rightVar="one"/>
             </WaitForCondition>
             <Sequence>
