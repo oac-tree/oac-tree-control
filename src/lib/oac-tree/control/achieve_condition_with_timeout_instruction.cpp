@@ -44,7 +44,6 @@ AchieveConditionWithTimeoutInstruction::AchieveConditionWithTimeoutInstruction()
   , m_internal_instruction_tree{}
   , m_instr_manager{}
 {
-  AddAttributeDefinition(Constants::VARIABLE_NAMES_ATTRIBUTE_NAME).SetMandatory();
   AddAttributeDefinition(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME, sup::dto::Float64Type)
     .SetCategory(AttributeCategory::kBoth).SetMandatory();
 }
@@ -103,18 +102,14 @@ std::unique_ptr<Instruction> AchieveConditionWithTimeoutInstruction::CreateWrapp
   auto force_success = GlobalInstructionRegistry().Create("ForceSuccess");
   force_success->InsertInstruction(std::move(action_wrapper), 0);
 
-  // Asynchronous wait for the timeout
-  auto wait = GlobalInstructionRegistry().Create("Wait");
-  wait->AddAttribute("timeout", GetAttributeString(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME));
-
-  // Use a clone of the condition here.
-  auto cond_wrapper_2 = CloneInstructionTree(*children[0]);
+  // Asynchronous fail for the timeout
+  auto fail = GlobalInstructionRegistry().Create("Fail");
+  fail->AddAttribute("timeout", GetAttributeString(Constants::TIMEOUT_SEC_ATTRIBUTE_NAME));
 
   // Sequence combining action and recheck of condition
   auto sequence = GlobalInstructionRegistry().Create("Sequence");
   sequence->InsertInstruction(std::move(force_success), 0);
-  sequence->InsertInstruction(std::move(wait), 1);
-  sequence->InsertInstruction(std::move(cond_wrapper_2), 2);
+  sequence->InsertInstruction(std::move(fail), 1);
 
   // Reactive fallback combining the condition and the sequence
   auto fallback = GlobalInstructionRegistry().Create("ReactiveFallback");

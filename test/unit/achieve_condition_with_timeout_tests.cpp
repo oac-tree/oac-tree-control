@@ -42,7 +42,7 @@ TEST_F(AchieveConditionWithTimeoutTest, Setup)
   {
     // No children
     const std::string body{R"(
-      <AchieveConditionWithTimeout varNames="live" timeout="0.5"/>
+      <AchieveConditionWithTimeout timeout="0.5"/>
       <Workspace/>)"};
 
     auto proc = ParseProcedureString(test::CreateProcedureString(body));
@@ -51,7 +51,7 @@ TEST_F(AchieveConditionWithTimeoutTest, Setup)
   {
     // One child
     const std::string body{R"(
-      <AchieveConditionWithTimeout varNames="live" timeout="0.5">
+      <AchieveConditionWithTimeout timeout="0.5">
           <Wait timeout="1.0"/>
       </AchieveConditionWithTimeout>
       <Workspace>
@@ -64,7 +64,7 @@ TEST_F(AchieveConditionWithTimeoutTest, Setup)
   {
     // Three children
     const std::string body{R"(
-      <AchieveConditionWithTimeout varNames="live" timeout="0.5">
+      <AchieveConditionWithTimeout timeout="0.5">
           <Wait timeout="1.0"/>
           <Wait timeout="2.0"/>
           <Wait timeout="3.0"/>
@@ -101,7 +101,7 @@ TEST_F(AchieveConditionWithTimeoutTest, Setup)
 TEST_F(AchieveConditionWithTimeoutTest, DirectSuccess)
 {
   const std::string body{R"(
-    <AchieveConditionWithTimeout varNames="live" timeout="1.0">
+    <AchieveConditionWithTimeout timeout="1.0">
         <Equals leftVar="live" rightVar="zero"/>
         <Wait timeout="0.2"/>
     </AchieveConditionWithTimeout>
@@ -119,7 +119,7 @@ TEST_F(AchieveConditionWithTimeoutTest, DirectSuccess)
 TEST_F(AchieveConditionWithTimeoutTest, SuccessImmediatelyAfterAction)
 {
   const std::string body{R"(
-    <AchieveConditionWithTimeout varNames="live" timeout="1.0">
+    <AchieveConditionWithTimeout timeout="1.0">
         <Equals leftVar="live" rightVar="one"/>
         <Copy inputVar="one" outputVar="live"/>
     </AchieveConditionWithTimeout>
@@ -138,7 +138,7 @@ TEST_F(AchieveConditionWithTimeoutTest, SuccessWithinTimeout)
 {
   const std::string body{R"(
     <ParallelSequence failureThreshold="2">
-        <AchieveConditionWithTimeout varNames="live" timeout="2.0">
+        <AchieveConditionWithTimeout timeout="2.0">
             <Equals leftVar="live" rightVar="one"/>
             <Wait/>
         </AchieveConditionWithTimeout>
@@ -164,7 +164,7 @@ TEST_F(AchieveConditionWithTimeoutTest, SuccessWithinTimeout)
 TEST_F(AchieveConditionWithTimeoutTest, FailAfterTimeout)
 {
   const std::string body{R"(
-    <AchieveConditionWithTimeout varNames="live" timeout="0.5">
+    <AchieveConditionWithTimeout timeout="0.5">
         <Equals leftVar="live" rightVar="one"/>
         <Wait timeout="0.1"/>
     </AchieveConditionWithTimeout>

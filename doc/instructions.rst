@@ -110,7 +110,7 @@ Its behavior is again similar to the ``AchieveCondition`` instruction, except th
 
 * After performing the action (if the condition was not immediately satisfied), the instruction allows for a certain time to achieve the condition.
 
-The following instruction trees are equivalent:
+``AchieveConditionWithTimeout`` is fully equivalent to a ``ReactiveFallback`` as shown in the following two equivalent instruction trees:
 
 .. code-block:: text
 
@@ -125,8 +125,7 @@ The following instruction trees are equivalent:
    └── Sequence
        ├── ForceSuccess
        │   └── <Action>
-       ├── Wait timeout="10.0"
-       └── <Condition>
+       └── Fail timeout="10.0"
 
 .. list-table::
    :widths: 25 25 15 50
@@ -136,10 +135,6 @@ The following instruction trees are equivalent:
      - Attribute type
      - Mandatory
      - Description
-   * - varNames
-     - StringType
-     - yes
-     - Comma-separated list of variable names to monitor during the timeout
    * - timeout
      - Float64Type
      - yes
