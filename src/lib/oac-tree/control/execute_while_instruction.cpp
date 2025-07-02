@@ -43,9 +43,7 @@ ExecuteWhileInstruction::ExecuteWhileInstruction()
   : CompoundInstruction(Type)
   , m_internal_instruction_tree{}
   , m_instr_manager{}
-{
-  AddAttributeDefinition(Constants::VARIABLE_NAMES_ATTRIBUTE_NAME).SetMandatory();
-}
+{}
 
 ExecuteWhileInstruction::~ExecuteWhileInstruction() = default;
 

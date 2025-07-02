@@ -189,18 +189,9 @@ The following instruction trees are equivalent:
 
    If the action is already asynchronous, i.e. it can return ``RUNNING``, a simple ``ReactiveSequence`` is a better choice to achieve this behavior.
 
-.. list-table::
-   :widths: 25 25 15 50
-   :header-rows: 1
+.. note::
 
-   * - Attribute name
-     - Attribute type
-     - Mandatory
-     - Description
-   * - varNames
-     - StringType
-     - yes
-     - Comma separated list of variable names to monitor during the execution
+   This instruction has no attributes.
 
 .. note::
 

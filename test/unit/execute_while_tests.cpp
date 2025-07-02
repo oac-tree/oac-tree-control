@@ -40,7 +40,7 @@ protected:
 TEST_F(ExecuteWhileTest, Success)
 {
   const std::string body{R"(
-    <ExecuteWhile varNames="live">
+    <ExecuteWhile>
         <Wait timeout="0.2"/>
         <Equals leftVar="live" rightVar="zero"/>
     </ExecuteWhile>
@@ -60,7 +60,7 @@ TEST_F(ExecuteWhileTest, Setup)
   {
     // No children
     const std::string body{R"(
-      <ExecuteWhile varNames="live"/>
+      <ExecuteWhile/>
       <Workspace>
           <Local name="live" type='{"type":"uint64"}' value='0' />
       </Workspace>)"};
@@ -71,7 +71,7 @@ TEST_F(ExecuteWhileTest, Setup)
   {
     // One child
     const std::string body{R"(
-      <ExecuteWhile varNames="live">
+      <ExecuteWhile>
           <Wait timeout="1.0"/>
       </ExecuteWhile>
       <Workspace>
@@ -84,7 +84,7 @@ TEST_F(ExecuteWhileTest, Setup)
   {
     // Three children
     const std::string body{R"(
-      <ExecuteWhile varNames="live">
+      <ExecuteWhile>
           <Wait timeout="1.0"/>
           <Wait timeout="2.0"/>
           <Wait timeout="3.0"/>
@@ -96,28 +96,13 @@ TEST_F(ExecuteWhileTest, Setup)
     auto proc = ParseProcedureString(test::CreateProcedureString(body));
     EXPECT_THROW(proc->Setup(), InstructionSetupException);
   }
-  {
-    // Missing mandatory attribute
-    auto instr = GlobalInstructionRegistry().Create("ExecuteWhile");
-    auto wait_1 = GlobalInstructionRegistry().Create("Wait");
-    auto wait_2 = GlobalInstructionRegistry().Create("Wait");
-    ASSERT_TRUE(instr);
-    ASSERT_TRUE(wait_1);
-    ASSERT_TRUE(wait_2);
-    ASSERT_TRUE(instr->InsertInstruction(std::move(wait_1), 0));
-    ASSERT_TRUE(instr->InsertInstruction(std::move(wait_2), 1));
-    Procedure proc;
-    EXPECT_THROW(instr->Setup(proc), InstructionSetupException);
-    EXPECT_TRUE(instr->AddAttribute("varNames", "does_not_matter"));
-    EXPECT_NO_THROW(instr->Setup(proc));
-  }
 }
 
 TEST_F(ExecuteWhileTest, Failure)
 {
   const std::string body{R"(
     <ParallelSequence successThreshold="1">
-        <ExecuteWhile varNames="live">
+        <ExecuteWhile>
             <Wait timeout="1.0"/>
             <Equals leftVar="live" rightVar="zero"/>
         </ExecuteWhile>
