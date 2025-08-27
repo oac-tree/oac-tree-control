@@ -11,6 +11,7 @@ target_sources(${unit-tests}
   achieve_condition_with_override_tests.cpp
   achieve_condition_with_timeout_tests.cpp
   execute_while_tests.cpp
+  non_owning_instruction_wrapper_tests.cpp
   test_user_interface.cpp
   unit_test_helper.cpp
   wait_for_condition_tests.cpp

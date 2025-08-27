@@ -43,7 +43,7 @@ NonOwningInstructionWrapper::~NonOwningInstructionWrapper() = default;
 
 Instruction::Category NonOwningInstructionWrapper::GetCategory() const
 {
-  return m_instr->GetCategory();
+  return GetInstruction()->GetCategory();
 }
 
 Instruction* NonOwningInstructionWrapper::GetInstruction()
@@ -58,28 +58,28 @@ const Instruction* NonOwningInstructionWrapper::GetInstruction() const
 
 void NonOwningInstructionWrapper::SetupImpl(const Procedure& proc)
 {
-  m_instr->Setup(proc);
+  GetInstruction()->Setup(proc);
 }
 
 ExecutionStatus NonOwningInstructionWrapper::ExecuteSingleImpl(UserInterface& ui, Workspace& ws)
 {
-  m_instr->ExecuteSingle(ui, ws);
-  return m_instr->GetStatus();
+  GetInstruction()->ExecuteSingle(ui, ws);
+  return GetInstruction()->GetStatus();
 }
 
 void NonOwningInstructionWrapper::HaltImpl()
 {
-  m_instr->Halt();
+  GetInstruction()->Halt();
 }
 
 void NonOwningInstructionWrapper::ResetHook(UserInterface& ui)
 {
-  m_instr->Reset(ui);
+  GetInstruction()->Reset(ui);
 }
 
 int NonOwningInstructionWrapper::ChildrenCountImpl() const
 {
-  return m_instr->ChildrenCount();
+  return GetInstruction()->ChildrenCount();
 }
 
 std::vector<const Instruction*> NonOwningInstructionWrapper::ChildInstructionsImpl() const
@@ -90,12 +90,12 @@ std::vector<const Instruction*> NonOwningInstructionWrapper::ChildInstructionsIm
 bool NonOwningInstructionWrapper::InsertInstructionImpl(std::unique_ptr<Instruction>&& child,
                                                         int index)
 {
-  return m_instr->InsertInstruction(std::move(child), index);
+  return GetInstruction()->InsertInstruction(std::move(child), index);
 }
 
 std::unique_ptr<Instruction> NonOwningInstructionWrapper::TakeInstructionImpl(int index)
 {
-  return m_instr->TakeInstruction(index);
+  return GetInstruction()->TakeInstruction(index);
 }
 
 } // namespace oac_tree
