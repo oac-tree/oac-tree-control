@@ -1,3 +1,7 @@
+Changes for 2.3.0:
+
+- Code quality improvements
+
 Changes for 2.2.0:
 
 - Removal of Instruction::NextInstructions API
