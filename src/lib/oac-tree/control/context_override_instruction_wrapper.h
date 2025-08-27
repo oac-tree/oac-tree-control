@@ -41,8 +41,6 @@ public:
 
   void SetUserInterface(UserInterface& ui);
 
-  static const std::string Type;
-
 private:
   UserInterface* m_ui;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;

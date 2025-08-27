@@ -26,10 +26,10 @@ namespace sup {
 
 namespace oac_tree {
 
-const std::string ContextOVerrideInstructionWrapper::Type = "ContextOVerrideInstructionWrapper";
+const std::string kContextOVerrideInstructionWrapperType = "ContextOVerrideInstructionWrapper";
 
 ContextOVerrideInstructionWrapper::ContextOVerrideInstructionWrapper(Instruction* instr)
-  : NonOwningInstructionWrapper(instr, Type)
+  : NonOwningInstructionWrapper(instr, kContextOVerrideInstructionWrapperType)
   , m_ui{}
 {}
 

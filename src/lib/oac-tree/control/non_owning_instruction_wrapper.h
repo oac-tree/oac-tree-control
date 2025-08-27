@@ -42,8 +42,6 @@ public:
 
   Category GetCategory() const override;
 
-  static const std::string Type;
-
 protected:
   Instruction* GetInstruction();
   const Instruction* GetInstruction() const;

@@ -26,10 +26,10 @@ namespace sup {
 
 namespace oac_tree {
 
-const std::string NonOwningInstructionWrapper::Type = "NonOwningInstructionWrapper";
+const std::string kNonOwningInstructionWrapperType = "NonOwningInstructionWrapper";
 
 NonOwningInstructionWrapper::NonOwningInstructionWrapper(Instruction* instr)
-  : Instruction(Type)
+  : Instruction(kNonOwningInstructionWrapperType)
   , m_instr{instr}
 {}
 
