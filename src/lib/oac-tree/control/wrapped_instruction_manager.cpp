@@ -38,7 +38,6 @@ namespace oac_tree {
 WrappedInstructionManager::WrappedInstructionManager()
   : m_wrapped_instructions{}
   , m_wrapped_ui{}
-  , m_local_workspace{}
 {}
 
 WrappedInstructionManager::~WrappedInstructionManager() = default;
@@ -61,20 +60,10 @@ UserInterface& WrappedInstructionManager::GetWrappedUI(UserInterface& ui, const 
   return *m_wrapped_ui;
 }
 
-Workspace& WrappedInstructionManager::GetLocalWorkspace()
-{
-  if (!m_local_workspace)
-  {
-    m_local_workspace = std::make_unique<Workspace>();
-  }
-  return *m_local_workspace;
-}
-
 void WrappedInstructionManager::ClearWrappers()
 {
   m_wrapped_instructions.clear();
   m_wrapped_ui.reset();
-  m_local_workspace.reset();
 }
 
 void WrappedInstructionManager::SetContext(UserInterface& ui)
