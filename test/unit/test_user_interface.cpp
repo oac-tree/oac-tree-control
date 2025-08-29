@@ -38,6 +38,7 @@ TestUserInputInterface::TestUserInputInterface()
                     std::bind(&TestUserInputInterface::Interrupt, this, _1)}
   , m_user_choices{}
   , m_current_index{0}
+  , m_return_valid_future{true}
 {}
 
 TestUserInputInterface::~TestUserInputInterface() = default;
@@ -48,9 +49,18 @@ void TestUserInputInterface::SetUserChoices(const std::vector<int>& user_choices
   m_current_index = 0;
 }
 
+void TestUserInputInterface::ReturnValidFuture(bool valid)
+{
+  m_return_valid_future = valid;
+}
+
 std::unique_ptr<IUserInputFuture> TestUserInputInterface::RequestUserInput(
   const UserInputRequest& request)
 {
+  if (!m_return_valid_future)
+  {
+    return std::make_unique<UnsupportedInputFuture>();
+  }
   return m_input_adapter.AddUserInputRequest(request);
 }
 
@@ -75,10 +85,6 @@ UserInputReply TestUserInputInterface::UserInput(const UserInputRequest& request
       return failure;
     }
     auto choice = GetUserChoice(options, metadata);
-    if (choice < 0)
-    {
-      return failure;
-    }
     return CreateUserChoiceReply(true, choice);
   }
   default:

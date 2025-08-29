@@ -74,6 +74,27 @@ TEST_F(AchieveConditionWithOverrideTest, SuccessAfterAction)
   EXPECT_TRUE(test::TryAndExecute(proc, ui));
 }
 
+TEST_F(AchieveConditionWithOverrideTest, SuccessAfterAsyncAction)
+{
+  const std::string body{R"(
+    <AchieveConditionWithOverride>
+        <Equals leftVar="live" rightVar="one"/>
+        <Sequence>
+            <Wait timeout="0.2"/>
+            <Copy inputVar="one" outputVar="live"/>
+        </Sequence>
+    </AchieveConditionWithOverride>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::NullUserInterface ui;
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui));
+}
+
 TEST_F(AchieveConditionWithOverrideTest, SuccessAfterCompoundAction)
 {
   const std::string body{R"(
@@ -258,6 +279,46 @@ TEST_F(AchieveConditionWithOverrideTest, KeepRetryingNoAction)
   ui.SetUserChoices({ 0 });
   auto proc = ParseProcedureString(test::CreateProcedureString(body));
   EXPECT_TRUE(test::TryAndExecute(proc, ui));
+}
+
+TEST_F(AchieveConditionWithOverrideTest, InvalidUserReplyFuture)
+{
+  const std::string body{R"(
+    <AchieveConditionWithOverride dialogText="Invalid Future">
+        <Equals leftVar="live" rightVar="one"/>
+        <Wait/>
+    </AchieveConditionWithOverride>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::TestUserInputInterface ui;
+  ui.ReturnValidFuture(false);
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  EXPECT_TRUE(ui.m_main_text.empty());
+}
+
+TEST_F(AchieveConditionWithOverrideTest, InvalidUserChoice)
+{
+  const std::string body{R"(
+    <AchieveConditionWithOverride dialogText="WrongChoice">
+        <Equals leftVar="live" rightVar="one"/>
+        <Wait/>
+    </AchieveConditionWithOverride>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::TestUserInputInterface ui;
+  ui.SetUserChoices({ -3 });
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+  EXPECT_EQ(ui.m_main_text, "WrongChoice");
 }
 
 TEST_F(AchieveConditionWithOverrideTest, VariableDialogText)

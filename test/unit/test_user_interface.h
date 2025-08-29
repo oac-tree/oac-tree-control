@@ -45,6 +45,8 @@ public:
 
   void SetUserChoices(const std::vector<int>& user_choices);
 
+  void ReturnValidFuture(bool valid);
+
   std::unique_ptr<IUserInputFuture> RequestUserInput(const UserInputRequest& request) override;
 
   std::string m_main_text;
@@ -56,6 +58,7 @@ private:
   AsyncInputAdapter m_input_adapter;
   std::vector<int> m_user_choices;
   std::size_t m_current_index;
+  bool m_return_valid_future;
 };
 
 } // namespace test

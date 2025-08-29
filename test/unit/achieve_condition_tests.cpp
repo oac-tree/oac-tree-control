@@ -120,6 +120,27 @@ TEST_F(AchieveConditionTest, FailAfterAction)
   EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
 }
 
+TEST_F(AchieveConditionTest, Halt)
+{
+  const std::string body{R"(
+    <ParallelSequence>
+        <Fail timeout="0.1"/>
+        <AchieveCondition>
+            <Equals leftVar="live" rightVar="one"/>
+            <Wait timeout="1.0"/>
+        </AchieveCondition>
+    </ParallelSequence>
+    <Workspace>
+        <Local name="live" type='{"type":"uint64"}' value='0' />
+        <Local name="one" type='{"type":"uint64"}' value='1' />
+    </Workspace>
+)"};
+
+  test::NullUserInterface ui;
+  auto proc = ParseProcedureString(test::CreateProcedureString(body));
+  EXPECT_TRUE(test::TryAndExecute(proc, ui, ExecutionStatus::FAILURE));
+}
+
 TEST_F(AchieveConditionTest,FailAfterCompoundAction)
 {
   const std::string body{R"(
