@@ -36,7 +36,7 @@ namespace oac_tree
 class NonOwningInstructionWrapper : public Instruction
 {
 public:
-  NonOwningInstructionWrapper(Instruction* instr);
+  explicit NonOwningInstructionWrapper(Instruction* instr);
   NonOwningInstructionWrapper(Instruction* instr, const std::string &type);
   ~NonOwningInstructionWrapper() override;
 

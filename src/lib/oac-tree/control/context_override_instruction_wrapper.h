@@ -36,7 +36,7 @@ namespace oac_tree
 class ContextOVerrideInstructionWrapper : public NonOwningInstructionWrapper
 {
 public:
-  ContextOVerrideInstructionWrapper(Instruction* instr);
+  explicit ContextOVerrideInstructionWrapper(Instruction* instr);
   ~ContextOVerrideInstructionWrapper() override;
 
   void SetUserInterface(UserInterface& ui);
