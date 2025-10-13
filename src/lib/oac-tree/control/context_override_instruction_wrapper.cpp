@@ -30,7 +30,7 @@ const std::string kContextOVerrideInstructionWrapperType = "ContextOVerrideInstr
 
 ContextOVerrideInstructionWrapper::ContextOVerrideInstructionWrapper(Instruction* instr)
   : NonOwningInstructionWrapper(instr, kContextOVerrideInstructionWrapperType)
-  , m_ui{}
+  , m_ui{nullptr}
 {}
 
 ContextOVerrideInstructionWrapper::~ContextOVerrideInstructionWrapper() = default;

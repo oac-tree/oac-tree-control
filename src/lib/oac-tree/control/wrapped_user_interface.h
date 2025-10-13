@@ -37,7 +37,7 @@ class WrappedUserInterface : public DefaultUserInterface
 {
 public:
   WrappedUserInterface(UserInterface& ui, const std::string& prefix);
-  ~WrappedUserInterface();
+  ~WrappedUserInterface() override;
 
 private:
   UserInterface& m_ui;
