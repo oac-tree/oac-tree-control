@@ -97,12 +97,12 @@ std::unique_ptr<Instruction> ExecuteWhileInstruction::CreateWrappedInstructionTr
 
   // Make action asynchronous
   auto async_action = GlobalInstructionRegistry().Create("Async");
-  async_action->InsertInstruction(std::move(tree_wrapper), 0);
+  (void)async_action->InsertInstruction(std::move(tree_wrapper), 0);
 
   // Reactive sequence combining the condition and the action
   auto reactive_sequence = GlobalInstructionRegistry().Create("ReactiveSequence");
-  reactive_sequence->InsertInstruction(std::move(condition_wrapper), 0);
-  reactive_sequence->InsertInstruction(std::move(async_action), 1);
+  (void)reactive_sequence->InsertInstruction(std::move(condition_wrapper), 0);
+  (void)reactive_sequence->InsertInstruction(std::move(async_action), 1);
 
   return reactive_sequence;
 }

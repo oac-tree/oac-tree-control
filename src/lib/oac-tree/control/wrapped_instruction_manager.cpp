@@ -44,7 +44,7 @@ WrappedInstructionManager::~WrappedInstructionManager() = default;
 
 std::unique_ptr<Instruction> WrappedInstructionManager::CreateInstructionWrapper(Instruction& instr)
 {
-  m_wrapped_instructions.emplace_back(std::make_unique<ContextOVerrideInstructionWrapper>(std::addressof(instr)));
+  (void)m_wrapped_instructions.emplace_back(std::make_unique<ContextOVerrideInstructionWrapper>(std::addressof(instr)));
   auto wrapper = m_wrapped_instructions.back().get();
   auto result = std::make_unique<NonOwningInstructionWrapper>(wrapper);
   return result;

@@ -48,7 +48,7 @@ AchieveConditionWithOverrideInstruction::AchieveConditionWithOverrideInstruction
   : CompoundInstruction(Type)
   , m_user_decision_needed{false}
 {
-  AddAttributeDefinition(MAIN_DIALOG_TEXT_ATTRIBUTE).SetCategory(AttributeCategory::kBoth);
+  (void)AddAttributeDefinition(MAIN_DIALOG_TEXT_ATTRIBUTE).SetCategory(AttributeCategory::kBoth);
 }
 
 AchieveConditionWithOverrideInstruction::~AchieveConditionWithOverrideInstruction() = default;
@@ -140,8 +140,8 @@ AchieveConditionWithOverrideInstruction::GetUserInput(const std::string& dialog_
       {1, kOverride},
       {2, kFail}};
   auto metadata = CreateUserChoiceMetadata();
-  metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, dialog_txt);
-  metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
+  (void)metadata.AddMember(Constants::USER_CHOICES_TEXT_NAME, dialog_txt);
+  (void)metadata.AddMember(Constants::USER_CHOICES_DIALOG_TYPE_NAME,
                      {sup::dto::UnsignedInteger32Type, dialog_type::kSelection});
   auto options = GetUserChoices();
   auto [retrieved, choice] = GetInterruptableUserChoice(ui, *this, options, metadata);
