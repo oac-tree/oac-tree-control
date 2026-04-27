@@ -65,11 +65,12 @@ ExecutionStatus WaitForConditionInstruction::ExecuteSingleImpl(UserInterface& ui
   return m_internal_instruction_tree->GetStatus();
 }
 
-void WaitForConditionInstruction::HaltImpl()
+void WaitForConditionInstruction::HaltImpl(UserInterface& ui)
 {
   if (m_internal_instruction_tree)
   {
-    m_internal_instruction_tree->Halt();
+    auto& wrapped_ui = m_instr_manager.GetWrappedUI(ui, LOG_MESSAGE_PREFIX);
+    m_internal_instruction_tree->Halt(wrapped_ui);
   }
 }
 

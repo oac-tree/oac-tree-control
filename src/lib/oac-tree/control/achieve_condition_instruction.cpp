@@ -69,11 +69,12 @@ void AchieveConditionInstruction::ResetHook(UserInterface& ui)
   }
 }
 
-void AchieveConditionInstruction::HaltImpl()
+void AchieveConditionInstruction::HaltImpl(UserInterface& ui)
 {
   if (m_internal_instruction_tree)
   {
-    m_internal_instruction_tree->Halt();
+    auto& wrapped_ui = m_instr_manager.GetWrappedUI(ui, LOG_MESSAGE_PREFIX);
+    m_internal_instruction_tree->Halt(wrapped_ui);
   }
 }
 

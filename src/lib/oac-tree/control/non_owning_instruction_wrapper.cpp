@@ -67,9 +67,9 @@ ExecutionStatus NonOwningInstructionWrapper::ExecuteSingleImpl(UserInterface& ui
   return GetInstruction()->GetStatus();
 }
 
-void NonOwningInstructionWrapper::HaltImpl()
+void NonOwningInstructionWrapper::HaltImpl(UserInterface& ui)
 {
-  GetInstruction()->Halt();
+  GetInstruction()->Halt(ui);
 }
 
 void NonOwningInstructionWrapper::ResetHook(UserInterface& ui)

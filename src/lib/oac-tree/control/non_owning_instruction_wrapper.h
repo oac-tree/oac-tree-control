@@ -50,7 +50,7 @@ private:
   Instruction* m_instr;  // wrapped instruction
   void SetupImpl(const Procedure& proc) override;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
-  void HaltImpl() override;
+  void HaltImpl(UserInterface& ui) override;
   void ResetHook(UserInterface& ui) override;
   int ChildrenCountImpl() const override;
   std::vector<const Instruction*> ChildInstructionsImpl() const override;

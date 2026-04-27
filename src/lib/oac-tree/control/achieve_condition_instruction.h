@@ -55,10 +55,8 @@ private:
   void SetupImpl(const Procedure& proc) override;
   ExecutionStatus ExecuteSingleImpl(UserInterface& ui, Workspace& ws) override;
   void ResetHook(UserInterface& ui) override;
-  void HaltImpl() override;
+  void HaltImpl(UserInterface& ui) override;
 
-  // void HandleAction(UserInterface& ui, Workspace& ws);
-  // ExecutionStatus CalculateCompoundStatus() const;
   std::unique_ptr<Instruction> CreateWrappedInstructionTree();
 
   std::unique_ptr<Instruction> m_internal_instruction_tree;
